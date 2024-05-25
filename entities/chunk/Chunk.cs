@@ -36,14 +36,12 @@ public partial class Chunk : StaticBody3D
 
     public void SetChunkPosition(Vector2I position)
     {
-        GD.Print($"SetChunkPosition {ChunkPosition} -> {position}");
         ChunkManager.Instance.UpdateChunkPosition(this, position, ChunkPosition);
         ChunkPosition = position;
         MeshInstance.Mesh = null;
         CallDeferred(Node3D.MethodName.SetGlobalPosition,
             new Vector3(position.X * Dimensions.X, 0, ChunkPosition.Y * Dimensions.Z));
-        Generate();
-        Update();
+        Update(true);
     }
 
     private void Generate()
@@ -69,13 +67,15 @@ public partial class Chunk : StaticBody3D
         }
     }
 
-    private void Update()
+    private void Update(bool generateMesh)
     {
-        WorkerThreadPool.AddTask(Callable.From(ProcessUpdate));
+        WorkerThreadPool.AddTask(Callable.From(() => ProcessUpdate(generateMesh)));
     }
 
-    private void ProcessUpdate()
+    private void ProcessUpdate(bool generateMesh)
     {
+        if (generateMesh) Generate();
+
         _surfaceTool.Begin(Mesh.PrimitiveType.Triangles);
 
         for (var x = 0; x < Dimensions.X; x++)
@@ -165,6 +165,6 @@ public partial class Chunk : StaticBody3D
     public void SetBlock(Vector3I position, Block block)
     {
         _blocks[position.X, position.Y, position.Z] = block;
-        Update();
+        Update(false);
     }
 }

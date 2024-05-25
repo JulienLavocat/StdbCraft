@@ -38,7 +38,7 @@ public partial class ChunkManager : Node
 
     public void UpdateChunkPosition(Chunk chunk, Vector2I currentPosition, Vector2I previousPosition)
     {
-        lock (_playerPositionLock)
+        lock (_positionToChunk)
         {
             if (_positionToChunk.TryGetValue(previousPosition, out var chunkAtPosition) && chunkAtPosition == chunk)
                 _positionToChunk.Remove(previousPosition);
@@ -88,9 +88,15 @@ public partial class ChunkManager : Node
 
             foreach (var chunk in _chunks)
             {
-                var chunkPosition = _chunkToPosition[chunk];
-                var chunkX = chunkPosition.X;
-                var chunkZ = chunkPosition.Y;
+                if (!IsInstanceValid(chunk)) continue;
+
+                var chunkX = 0;
+                var chunkZ = 0;
+                if (_chunkToPosition.TryGetValue(chunk, out var chunkPosition))
+                {
+                    chunkX = chunkPosition.X;
+                    chunkZ = chunkPosition.Y;
+                }
 
                 var newChunkX = Mathf.PosMod(chunkX - playerChunkX + halfViewRadius, _viewRadius) + playerChunkX -
                                 halfViewRadius;
