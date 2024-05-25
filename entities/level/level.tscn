@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://du4jeotpmd58o"]
+[gd_scene load_steps=17 format=3 uid="uid://du4jeotpmd58o"]
 
 [ext_resource type="Script" path="res://scripts/BlockManager.cs" id="1_h7r1i"]
 [ext_resource type="PackedScene" uid="uid://77br0vjxwuba" path="res://entities/chunk/chunk.tscn" id="1_s43aj"]
@@ -35,6 +35,8 @@ Texture = ExtResource("5_3dbfq")
 TopTexture = ExtResource("5_wwcpk")
 BottomTexture = ExtResource("4_4wu41")
 
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_ftlfw"]
+
 [node name="Level" type="Node3D"]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
@@ -48,20 +50,20 @@ Dirt = SubResource("Resource_s1764")
 Grass = SubResource("Resource_7v2ql")
 
 [node name="Chunk" parent="." instance=ExtResource("1_s43aj")]
-refresh = true
-Noise = null
+Noise = SubResource("FastNoiseLite_ftlfw")
 
 [node name="Chunk2" parent="." instance=ExtResource("1_s43aj")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16, 0, 0)
-Noise = null
+Noise = SubResource("FastNoiseLite_ftlfw")
 
 [node name="Chunk3" parent="." instance=ExtResource("1_s43aj")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -16)
-Noise = null
+refresh = true
+Noise = SubResource("FastNoiseLite_ftlfw")
 
 [node name="Chunk4" parent="." instance=ExtResource("1_s43aj")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15.9548, 0.0398407, -15.979)
-Noise = null
+Noise = SubResource("FastNoiseLite_ftlfw")
 
 [node name="Player" parent="." instance=ExtResource("8_4bs8w")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 38.0294, 0)

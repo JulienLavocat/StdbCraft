@@ -169,6 +169,7 @@ public partial class Chunk : StaticBody3D
      */
     public void SetBlock(Vector3I position, Block block)
     {
+        GD.Print("Setblock called");
         SetBlockRelative((Vector3I)(position - GlobalPosition), block);
     }
 }

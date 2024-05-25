@@ -6,7 +6,7 @@ public partial class Player : CharacterBody3D
     private float _gravity = ProjectSettings.GetSetting("physics/3d/default_gravity").AsSingle();
     [Export] private float _jumpVelocity = 10f;
     [Export] private float _mouseSensitivity = 0.35f;
-    [Export] private float _movementSpeed = 16f;
+    [Export] private float _movementSpeed = 10f;
 
     [Export] public Node3D Head { get; set; }
     [Export] public Camera3D Camera { get; set; }
@@ -29,7 +29,10 @@ public partial class Player : CharacterBody3D
         var deltaY = -mouseMotion.Relative.X * _mouseSensitivity;
 
         Head.RotateY(Mathf.DegToRad(deltaY));
-        Camera.RotateX(Mathf.DegToRad(Mathf.Clamp(-deltaX, -90, 90)));
+
+        if (!(_cameraXRotation + deltaX > -90) || !(_cameraXRotation + deltaX < 90)) return;
+        Camera.RotateX(Mathf.DegToRad(-deltaX));
+        _cameraXRotation += deltaX;
     }
 
     public override void _Process(double delta)
