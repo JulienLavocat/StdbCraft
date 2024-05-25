@@ -1,0 +1,36 @@
+[gd_scene load_steps=5 format=3 uid="uid://ds7t06g4naxuw"]
+
+[ext_resource type="Script" path="res://entities/player/Player.cs" id="1_mfjix"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_pgkoh"]
+radius = 0.45
+height = 1.8
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dtwtt"]
+transparency = 1
+albedo_color = Color(1, 1, 0.32549, 0.156863)
+
+[sub_resource type="BoxMesh" id="BoxMesh_wl6gw"]
+material = SubResource("StandardMaterial3D_dtwtt")
+size = Vector3(1.05, 1.05, 1.05)
+
+[node name="Player" type="CharacterBody3D" node_paths=PackedStringArray("Head", "Camera", "RayCast", "BlockHighlight")]
+script = ExtResource("1_mfjix")
+Head = NodePath("Head")
+Camera = NodePath("Head/Camera3D")
+RayCast = NodePath("Head/Camera3D/RayCast3D")
+BlockHighlight = NodePath("BlockHighlight")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("CapsuleShape3D_pgkoh")
+
+[node name="Head" type="Node3D" parent="."]
+
+[node name="Camera3D" type="Camera3D" parent="Head"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.597281, 0)
+
+[node name="RayCast3D" type="RayCast3D" parent="Head/Camera3D"]
+target_position = Vector3(0, 0, -5)
+
+[node name="BlockHighlight" type="MeshInstance3D" parent="."]
+mesh = SubResource("BoxMesh_wl6gw")
