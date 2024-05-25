@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://77br0vjxwuba"]
 
-[ext_resource type="Script" path="res://Entities/Chunk/Chunk.cs" id="1_6v88j"]
+[ext_resource type="Script" path="res://Scenes/Chunk/Chunk.cs" id="1_6v88j"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_metkd"]
 

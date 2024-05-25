@@ -24,6 +24,11 @@ public partial class BlockManager : Node
         Instance?.QueueFree();
         Instance = this;
 
+        GenerateTextureAtlas();
+    }
+
+    private void GenerateTextureAtlas()
+    {
         var blockTextures = new[] { Air, Stone, Dirt, Grass }.SelectMany(b => b.Textures).Where(t => t != null)
             .Distinct().ToArray();
 
