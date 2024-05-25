@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://ds7t06g4naxuw"]
+[gd_scene load_steps=7 format=3 uid="uid://ds7t06g4naxuw"]
 
 [ext_resource type="Script" path="res://Entities/Player/Player.cs" id="1_mfjix"]
 [ext_resource type="Script" path="res://Entities/Player/MoveComponent.cs" id="2_46gwm"]
@@ -15,10 +15,14 @@ albedo_color = Color(1, 1, 0.32549, 0.156863)
 material = SubResource("StandardMaterial3D_dtwtt")
 size = Vector3(1.05, 1.05, 1.05)
 
-[node name="Player" type="CharacterBody3D" node_paths=PackedStringArray("RayCast", "BlockHighlight")]
+[sub_resource type="BoxShape3D" id="BoxShape3D_vrqte"]
+size = Vector3(0.95, 0.95, 0.95)
+
+[node name="Player" type="CharacterBody3D" node_paths=PackedStringArray("RayCast", "BlockHighlight", "ShapeCast")]
 script = ExtResource("1_mfjix")
 RayCast = NodePath("Head/Camera3D/RayCast3D")
 BlockHighlight = NodePath("BlockHighlight")
+ShapeCast = NodePath("ShapeCast3D")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 shape = SubResource("CapsuleShape3D_pgkoh")
@@ -39,3 +43,9 @@ script = ExtResource("2_46gwm")
 CharacterBody = NodePath("..")
 Head = NodePath("../Head")
 Camera = NodePath("../Head/Camera3D")
+
+[node name="ShapeCast3D" type="ShapeCast3D" parent="."]
+shape = SubResource("BoxShape3D_vrqte")
+exclude_parent = false
+target_position = Vector3(0, 0, 0)
+debug_shape_custom_color = Color(0.807843, 0, 1, 1)

@@ -10,6 +10,7 @@ public partial class Player : CharacterBody3D
 
     [Export] public RayCast3D RayCast { get; set; }
     [Export] public MeshInstance3D BlockHighlight { get; set; }
+    [Export] public ShapeCast3D ShapeCast { get; set; }
 
     public static Player Instance { get; private set; }
 
@@ -34,8 +35,15 @@ public partial class Player : CharacterBody3D
             if (Input.IsActionJustPressed("Break"))
                 ChunkManager.Instance.SetBlock(intBlockPosition, BlockManager.Instance.Air);
             if (Input.IsActionJustPressed("Place"))
-                ChunkManager.Instance.SetBlock((Vector3I)(intBlockPosition + RayCast.GetCollisionNormal()),
-                    BlockManager.Instance.Stone);
+            {
+                var placeAt = (Vector3I)(intBlockPosition + RayCast.GetCollisionNormal());
+
+                ShapeCast.GlobalPosition = placeAt + new Vector3(0.5f, 0.5f, 0.5f);
+                ShapeCast.ForceShapecastUpdate();
+                if (ShapeCast.IsColliding()) return;
+
+                ChunkManager.Instance.SetBlock(placeAt, BlockManager.Instance.Stone);
+            }
         }
         else
         {
