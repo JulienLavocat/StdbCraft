@@ -2,7 +2,6 @@ using System.Linq;
 using Godot;
 using Godot.Collections;
 
-[Tool]
 public partial class BlockManager : Node
 {
     private readonly Dictionary<Texture2D, Vector2I> _atlasLookup = new();
@@ -20,8 +19,9 @@ public partial class BlockManager : Node
 
     public StandardMaterial3D ChunkMaterial { get; private set; }
 
-    public override void _Ready()
+    public override void _EnterTree()
     {
+        Instance?.QueueFree();
         Instance = this;
 
         var blockTextures = new[] { Air, Stone, Dirt, Grass }.SelectMany(b => b.Textures).Where(t => t != null)

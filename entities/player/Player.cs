@@ -37,7 +37,7 @@ public partial class Player : CharacterBody3D
 
     public override void _Process(double delta)
     {
-        if (RayCast.IsColliding() && RayCast.GetCollider() is Chunk chunk)
+        if (RayCast.IsColliding() && RayCast.GetCollider() is Chunk)
         {
             BlockHighlight.Visible = true;
 
@@ -48,9 +48,10 @@ public partial class Player : CharacterBody3D
             BlockHighlight.GlobalPosition = intBlockPosition + new Vector3(0.5f, 0.5f, 0.5f);
 
             if (Input.IsActionJustPressed("Break"))
-                chunk.SetBlock(intBlockPosition, BlockManager.Instance.Air);
+                ChunkManager.Instance.SetBlock(intBlockPosition, BlockManager.Instance.Air);
             if (Input.IsActionJustPressed("Place"))
-                chunk.SetBlock(intBlockPosition + (Vector3I)RayCast.GetCollisionNormal(), BlockManager.Instance.Stone);
+                ChunkManager.Instance.SetBlock((Vector3I)(intBlockPosition + RayCast.GetCollisionNormal()),
+                    BlockManager.Instance.Stone);
         }
         else
         {
