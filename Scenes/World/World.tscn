@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3 uid="uid://du4jeotpmd58o"]
+[gd_scene load_steps=18 format=3 uid="uid://du4jeotpmd58o"]
 
 [ext_resource type="PackedScene" uid="uid://c5shy618l0o2g" path="res://Scenes/ChunkManager/ChunkManager.tscn" id="1_otvmw"]
 [ext_resource type="PackedScene" uid="uid://77br0vjxwuba" path="res://Scenes/Chunk/Chunk.tscn" id="2_7rnt5"]
@@ -9,7 +9,6 @@
 [ext_resource type="Texture2D" uid="uid://cejdfsf1u3e56" path="res://Textures/Blocks/grass_side.png" id="7_1ky76"]
 [ext_resource type="Texture2D" uid="uid://cy0cw57k06wja" path="res://Textures/Blocks/grass_top.png" id="8_2fw8l"]
 [ext_resource type="PackedScene" uid="uid://ds7t06g4naxuw" path="res://Entities/Player/Player.tscn" id="9_t8nd6"]
-[ext_resource type="Script" path="res://Scenes/World/DebugInfo.cs" id="10_nv2ah"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_rvjpw"]
 
@@ -62,8 +61,3 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 70.4793, 0)
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.602108, 0.798415, 0, -0.798415, 0.602108, 0, 37.3323, -10.2743)
 shadow_enabled = true
-
-[node name="DebugInfo" type="Label" parent="."]
-offset_right = 40.0
-offset_bottom = 23.0
-script = ExtResource("10_nv2ah")

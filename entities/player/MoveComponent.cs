@@ -2,7 +2,7 @@ using Godot;
 
 public partial class MoveComponent : Node3D
 {
-    private readonly float _gravity = ProjectSettings.GetSetting("physics/3d/default_gravity").AsSingle() + 5;
+    private readonly float _gravity = ProjectSettings.GetSetting("physics/3d/default_gravity").AsSingle() * 1.8f;
     private float _cameraXRotation;
     [Export] private float _jumpVelocity = 6f;
     [Export] private float _mouseSensitivity = 0.35f;

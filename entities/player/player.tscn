@@ -1,7 +1,9 @@
-[gd_scene load_steps=7 format=3 uid="uid://ds7t06g4naxuw"]
+[gd_scene load_steps=9 format=3 uid="uid://ds7t06g4naxuw"]
 
 [ext_resource type="Script" path="res://Entities/Player/Player.cs" id="1_mfjix"]
 [ext_resource type="Script" path="res://Entities/Player/MoveComponent.cs" id="2_46gwm"]
+[ext_resource type="Script" path="res://Entities/Player/DebugInfo.cs" id="3_diggn"]
+[ext_resource type="Texture2D" uid="uid://dex3ujeg34uo" path="res://Textures/UI/crosshair.png" id="4_hs5wg"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_pgkoh"]
 radius = 0.45
@@ -49,3 +51,29 @@ shape = SubResource("BoxShape3D_vrqte")
 exclude_parent = false
 target_position = Vector3(0, 0, 0)
 debug_shape_custom_color = Color(0.807843, 0, 1, 1)
+
+[node name="UI" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="UI"]
+layout_mode = 1
+offset_right = 1.0
+offset_bottom = 23.0
+script = ExtResource("3_diggn")
+
+[node name="CenterContainer" type="CenterContainer" parent="UI"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TextureRect" type="TextureRect" parent="UI/CenterContainer"]
+layout_mode = 2
+texture = ExtResource("4_hs5wg")
