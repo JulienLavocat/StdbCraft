@@ -21,7 +21,7 @@ public partial class Flying : FsmState
     public override void OnPhysicsProcess(double delta)
     {
         var velocity = CharacterBody.Velocity;
-        velocity.Y = Input.GetAxis("Sprint", "Jump") * FlySpeed;
+        velocity.Y = Input.GetAxis("Crouch", "Jump") * FlySpeed;
         CharacterBody.Velocity = velocity;
 
         Player.Instance.ProcessMovement(delta, FlySpeed, false);

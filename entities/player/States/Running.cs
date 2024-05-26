@@ -17,12 +17,10 @@ public partial class Running : FsmState
 
     public override void OnProcess(double delta)
     {
-        if (Input.IsActionJustReleased("Sprint"))
-            ChangeState("Idle");
         if (Input.IsActionJustPressed("Jump"))
             ChangeState("Jumping");
+        if (Player.GetInputDirection().IsZeroApprox()) ChangeState("Idle");
     }
-
 
     public override void OnPhysicsProcess(double delta)
     {

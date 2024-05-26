@@ -5,8 +5,8 @@ namespace StDBCraft.Entities.Player;
 public partial class Player : CharacterBody3D
 {
     private float _cameraXRotation;
-    [Export] private float _gravity = ProjectSettings.GetSetting("physics/3d/default_gravity").AsSingle();
-    [Export] private float _jumpVelocity = 12f;
+    [Export] private float _gravity = ProjectSettings.GetSetting("physics/3d/default_gravity").AsSingle() * 2;
+    [Export] private float _jumpVelocity = 6f;
     [Export] private float _mouseSensitivity = 0.35f;
     [Export] private float _movementSpeed = 10f;
 
@@ -77,7 +77,6 @@ public partial class Player : CharacterBody3D
     public void ProcessMovement(double delta, float speed, bool withGravity = true)
     {
         var velocity = Velocity;
-
 
         if (withGravity && !IsOnFloor()) velocity.Y -= _gravity * (float)delta;
 
