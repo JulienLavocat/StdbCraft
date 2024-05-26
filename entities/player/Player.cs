@@ -78,6 +78,7 @@ public partial class Player : CharacterBody3D
     {
         var velocity = Velocity;
 
+
         if (withGravity && !IsOnFloor()) velocity.Y -= _gravity * (float)delta;
 
         var inputDirection = Input.GetVector("Left", "Right", "Back", "Forward").Normalized();

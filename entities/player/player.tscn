@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://ds7t06g4naxuw"]
+[gd_scene load_steps=13 format=3 uid="uid://ds7t06g4naxuw"]
 
 [ext_resource type="Script" path="res://Entities/Player/Player.cs" id="1_mfjix"]
 [ext_resource type="Script" path="res://Scripts/StateMachine/Fsm.cs" id="2_dkhgo"]
@@ -7,6 +7,7 @@
 [ext_resource type="Script" path="res://Entities/Player/States/Running.cs" id="4_6khyj"]
 [ext_resource type="Texture2D" uid="uid://dex3ujeg34uo" path="res://Textures/UI/crosshair.png" id="4_hs5wg"]
 [ext_resource type="Script" path="res://Entities/Player/States/Jumping.cs" id="5_80stw"]
+[ext_resource type="Script" path="res://Entities/Player/States/Flying.cs" id="6_vn1cs"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_pgkoh"]
 radius = 0.45
@@ -45,6 +46,10 @@ Head = NodePath("../../Head")
 
 [node name="Jumping" type="Node" parent="StateMachine" node_paths=PackedStringArray("CharacterBody")]
 script = ExtResource("5_80stw")
+CharacterBody = NodePath("../..")
+
+[node name="Flying" type="Node" parent="StateMachine" node_paths=PackedStringArray("CharacterBody")]
+script = ExtResource("6_vn1cs")
 CharacterBody = NodePath("../..")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]

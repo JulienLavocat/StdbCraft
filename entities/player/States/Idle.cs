@@ -16,6 +16,7 @@ public partial class Idle : FsmState
     public override void OnProcess(double delta)
     {
         if (Input.IsActionPressed("Sprint")) ChangeState("Running");
+        if (Input.IsActionPressed("Jump")) ChangeState("Jumping");
     }
 
     public override void OnPhysicsProcess(double delta)
@@ -26,6 +27,5 @@ public partial class Idle : FsmState
     public override void OnInput(InputEvent @event)
     {
         Player.Instance.ProcessRotationInput(@event);
-        if (Input.IsActionJustPressed("Jump")) ChangeState("Jumping");
     }
 }
