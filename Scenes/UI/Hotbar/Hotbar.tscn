@@ -1,0 +1,21 @@
+[gd_scene load_steps=2 format=3 uid="uid://cltefhlnrkfda"]
+
+[ext_resource type="PackedScene" uid="uid://dehqeodargt4q" path="res://Scenes/UI/Hotbar/Slot/HotbarSlot.tscn" id="1_7lkn2"]
+
+[node name="Hotbar" type="HBoxContainer"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -25.0
+offset_right = 25.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 50
+
+[node name="Slot" parent="." instance=ExtResource("1_7lkn2")]
+layout_mode = 2
+
+[node name="Slot2" parent="." instance=ExtResource("1_7lkn2")]
+layout_mode = 2

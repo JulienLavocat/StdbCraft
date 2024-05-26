@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://ds7t06g4naxuw"]
+[gd_scene load_steps=14 format=3 uid="uid://ds7t06g4naxuw"]
 
 [ext_resource type="Script" path="res://Entities/Player/Player.cs" id="1_mfjix"]
 [ext_resource type="Script" path="res://Scripts/StateMachine/Fsm.cs" id="2_dkhgo"]
@@ -8,6 +8,7 @@
 [ext_resource type="Texture2D" uid="uid://dex3ujeg34uo" path="res://Textures/UI/crosshair.png" id="4_hs5wg"]
 [ext_resource type="Script" path="res://Entities/Player/States/Jumping.cs" id="5_80stw"]
 [ext_resource type="Script" path="res://Entities/Player/States/Flying.cs" id="6_vn1cs"]
+[ext_resource type="PackedScene" uid="uid://cltefhlnrkfda" path="res://Scenes/UI/Hotbar/Hotbar.tscn" id="9_xqq0m"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_pgkoh"]
 radius = 0.45
@@ -97,3 +98,21 @@ grow_vertical = 2
 [node name="TextureRect" type="TextureRect" parent="UI/CenterContainer"]
 layout_mode = 2
 texture = ExtResource("4_hs5wg")
+
+[node name="Control" type="MarginContainer" parent="UI"]
+visible = false
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -42.0
+offset_bottom = -2.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="Hotbar" parent="UI/Control" instance=ExtResource("9_xqq0m")]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 0
+alignment = 2
