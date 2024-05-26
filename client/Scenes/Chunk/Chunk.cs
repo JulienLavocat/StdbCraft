@@ -1,4 +1,8 @@
 using Godot;
+using StDBCraft.Scripts;
+using StdbCraft.SpacetimeDb;
+
+namespace StDBCraft.Scenes.Chunk;
 
 public partial class Chunk : StaticBody3D
 {
@@ -24,9 +28,9 @@ public partial class Chunk : StaticBody3D
     private static readonly int[] Front = { 2, 0, 1, 3 };
 
     private readonly Block[,,] _blocks = new Block[Dimensions.X, Dimensions.Y, Dimensions.Z];
-    private bool _refresh;
 
-    private SurfaceTool _surfaceTool = new();
+    private readonly SurfaceTool _surfaceTool = new();
+    private bool _refresh;
     [Export] public CollisionShape3D CollisionShape { get; set; }
     [Export] public MeshInstance3D MeshInstance { get; set; }
 
@@ -36,15 +40,15 @@ public partial class Chunk : StaticBody3D
 
     public void SetChunkPosition(Vector2I position)
     {
-        ChunkManager.Instance.UpdateChunkPosition(this, position, ChunkPosition);
+        ChunkManager.ChunkManager.Instance.UpdateChunkPosition(this, position, ChunkPosition);
         ChunkPosition = position;
         MeshInstance.Mesh = null;
         CallDeferred(Node3D.MethodName.SetGlobalPosition,
             new Vector3(position.X * Dimensions.X, 0, ChunkPosition.Y * Dimensions.Z));
-        Update(true);
+        UpdateMesh(true);
     }
 
-    private void Generate()
+    private void GenerateBlocks()
     {
         var globalChunkPosition = ChunkPosition * new Vector2I(Dimensions.X, Dimensions.Z);
 
@@ -56,25 +60,27 @@ public partial class Chunk : StaticBody3D
             var groundHeight =
                 (int)(Dimensions.Y * ((Noise.GetNoise2D(globalBlockPosition.X, globalBlockPosition.Y) + 1f) / 2f));
 
-            var block = BlockManager.Instance.Air;
-            if (y < groundHeight - 4)
-                block = BlockManager.Instance.Stone;
+            var blockId = 0;
+            if (y == groundHeight - 1) blockId = 4;
+            else if (y == groundHeight - 2) blockId = 5;
+            else if (y < groundHeight - 4)
+                blockId = 1;
             else if (y < groundHeight)
-                block = BlockManager.Instance.Dirt;
-            else if (y == groundHeight) block = BlockManager.Instance.Grass;
+                blockId = 2;
+            else if (y == groundHeight) blockId = 3;
 
-            _blocks[x, y, z] = block;
+            _blocks[x, y, z] = BlockManager.Instance.Blocks[blockId];
         }
     }
 
-    private void Update(bool generateMesh)
+    private void UpdateMesh(bool generateBlocks)
     {
-        WorkerThreadPool.AddTask(Callable.From(() => ProcessUpdate(generateMesh)));
+        WorkerThreadPool.AddTask(Callable.From(() => ProcessUpdateMesh(generateBlocks)));
     }
 
-    private void ProcessUpdate(bool generateMesh)
+    private void ProcessUpdateMesh(bool generateBlocks)
     {
-        if (generateMesh) Generate();
+        if (generateBlocks) GenerateBlocks();
 
         _surfaceTool.Begin(Mesh.PrimitiveType.Triangles);
 
@@ -88,36 +94,34 @@ public partial class Chunk : StaticBody3D
         var mesh = _surfaceTool.Commit();
         var collisionShape = mesh.CreateTrimeshShape();
 
-        if (IsInstanceValid(this))
-        {
-            MeshInstance.SetDeferred(MeshInstance3D.PropertyName.Mesh, mesh);
-            CollisionShape.SetDeferred(CollisionShape3D.PropertyName.Shape, collisionShape);
-        }
+        if (!IsInstanceValid(this)) return;
+        MeshInstance.SetDeferred(MeshInstance3D.PropertyName.Mesh, mesh);
+        CollisionShape.SetDeferred(CollisionShape3D.PropertyName.Shape, collisionShape);
     }
 
     private void CreateBlockMesh(Vector3I position)
     {
         var block = _blocks[position.X, position.Y, position.Z];
 
-        if (block == BlockManager.Instance.Air) return;
-
         if (CheckTransparent(position + Vector3I.Up))
-            CreateFaceMesh(Top, position, block.TopTexture ?? block.Texture);
+            CreateFaceMesh(Top, position, block.Top != -1 ? block.Top : block.Side);
         if (CheckTransparent(position + Vector3I.Down))
-            CreateFaceMesh(Bottom, position, block.BottomTexture ?? block.Texture);
+            CreateFaceMesh(Bottom, position, block.Bottom != -1 ? block.Bottom : block.Side);
         if (CheckTransparent(position + Vector3I.Left))
-            CreateFaceMesh(Left, position, block.Texture ?? block.Texture);
+            CreateFaceMesh(Left, position, block.Side);
         if (CheckTransparent(position + Vector3I.Right))
-            CreateFaceMesh(Right, position, block.Texture ?? block.Texture);
+            CreateFaceMesh(Right, position, block.Side);
         if (CheckTransparent(position + Vector3I.Back))
-            CreateFaceMesh(Back, position, block.Texture ?? block.Texture);
+            CreateFaceMesh(Back, position, block.Side);
         if (CheckTransparent(position + Vector3I.Forward))
-            CreateFaceMesh(Front, position, block.Texture ?? block.Texture);
+            CreateFaceMesh(Front, position, block.Side);
     }
 
-    private void CreateFaceMesh(int[] face, Vector3I position, Texture2D texture)
+    private void CreateFaceMesh(int[] face, Vector3I position, int textureIndex)
     {
-        var texturePosition = BlockManager.Instance.GetTextureAtlasPosition(texture);
+        if (textureIndex == -1) return;
+
+        var texturePosition = BlockManager.Instance.GetTextureAtlasPosition(textureIndex);
         var textureAtlasSize = BlockManager.Instance.TextureAtlasSize;
 
         var uvOffset = texturePosition / textureAtlasSize;
@@ -156,7 +160,7 @@ public partial class Chunk : StaticBody3D
         if (position.Y < 0 || position.Y >= Dimensions.Y) return true;
         if (position.Z < 0 || position.Z >= Dimensions.Z) return true;
 
-        return _blocks[position.X, position.Y, position.Z] == BlockManager.Instance.Air;
+        return _blocks[position.X, position.Y, position.Z].IsTransparent;
     }
 
     /**
@@ -165,6 +169,6 @@ public partial class Chunk : StaticBody3D
     public void SetBlock(Vector3I position, Block block)
     {
         _blocks[position.X, position.Y, position.Z] = block;
-        Update(false);
+        UpdateMesh(false);
     }
 }

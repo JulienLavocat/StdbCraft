@@ -1,16 +1,17 @@
 using System.Linq;
 using Godot;
 using Godot.Collections;
+using Block = StdbCraft.SpacetimeDb.Block;
+
+namespace StDBCraft.Scripts;
 
 public partial class BlockManager : Node
 {
+    private const int GridWidth = 4;
     private readonly Dictionary<Texture2D, Vector2I> _atlasLookup = new();
     private int _gridHeight;
-    private int _gridWidth = 4;
-    [Export] public Block Air { get; set; }
-    [Export] public Block Stone { get; set; }
-    [Export] public Block Dirt { get; set; }
-    [Export] public Block Grass { get; set; }
+
+    [Export] private Texture2D[] _textures;
 
     public Vector2I BlockTextureSize { get; set; } = new(16, 16);
     public Vector2 TextureAtlasSize { get; private set; }
@@ -19,34 +20,35 @@ public partial class BlockManager : Node
 
     public StandardMaterial3D ChunkMaterial { get; private set; }
 
+    public Block[] Blocks { get; private set; }
+
     public override void _EnterTree()
     {
         Instance?.QueueFree();
         Instance = this;
-
-        GenerateTextureAtlas();
     }
 
-    private void GenerateTextureAtlas()
+    public void GenerateTextureAtlas()
     {
-        var blockTextures = new[] { Air, Stone, Dirt, Grass }.SelectMany(b => b.Textures).Where(t => t != null)
-            .Distinct().ToArray();
+        Blocks = Block.Iter().ToArray();
+        var blockTextures = Block.Iter().SelectMany(b => new[] { b.Top, b.Bottom, b.Side }).Where(index => index != -1)
+            .Distinct().Select(textureIndex => _textures[textureIndex]).ToArray();
 
         for (var i = 0; i < blockTextures.Length; i++)
         {
             var texture = blockTextures[i];
-            _atlasLookup.Add(texture, new Vector2I(i % _gridWidth, Mathf.FloorToInt(i / (float)_gridWidth)));
+            _atlasLookup.Add(texture, new Vector2I(i % GridWidth, Mathf.FloorToInt(i / (float)GridWidth)));
         }
 
-        _gridHeight = Mathf.CeilToInt(blockTextures.Length / (float)_gridWidth);
+        _gridHeight = Mathf.CeilToInt(blockTextures.Length / (float)GridWidth);
 
-        var image = Image.Create(_gridWidth * BlockTextureSize.X, _gridHeight * BlockTextureSize.Y, false,
+        var image = Image.Create(GridWidth * BlockTextureSize.X, _gridHeight * BlockTextureSize.Y, false,
             Image.Format.Rgba8);
 
-        for (var x = 0; x < _gridWidth; x++)
+        for (var x = 0; x < GridWidth; x++)
         for (var y = 0; y < _gridHeight; y++)
         {
-            var imgIndex = x + y * _gridWidth;
+            var imgIndex = x + y * GridWidth;
             if (imgIndex >= blockTextures.Length) continue;
 
             var currentImage = blockTextures[imgIndex].GetImage();
@@ -60,15 +62,17 @@ public partial class BlockManager : Node
         ChunkMaterial = new StandardMaterial3D
         {
             AlbedoTexture = textureAtlas,
-            TextureFilter = BaseMaterial3D.TextureFilterEnum.Nearest
+            TextureFilter = BaseMaterial3D.TextureFilterEnum.Nearest,
+            Transparency = BaseMaterial3D.TransparencyEnum.AlphaScissor
         };
 
-        TextureAtlasSize = new Vector2(_gridWidth, _gridHeight);
-        GD.Print($"Done loading {blockTextures.Length} images to make {_gridWidth}x{_gridHeight} atlas");
+        TextureAtlasSize = new Vector2(GridWidth, _gridHeight);
+        GD.Print($"Done loading {blockTextures.Length} images to make {GridWidth}x{_gridHeight} atlas");
     }
 
-    public Vector2I GetTextureAtlasPosition(Texture2D texture)
+    public Vector2I GetTextureAtlasPosition(int textureIndex)
     {
+        var texture = _textures[textureIndex];
         return texture == null ? Vector2I.Zero : _atlasLookup[texture];
     }
 }

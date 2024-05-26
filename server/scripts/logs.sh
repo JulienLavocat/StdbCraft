@@ -1,0 +1,1 @@
+spacetime logs stdbmc --follow

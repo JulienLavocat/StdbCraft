@@ -1,0 +1,1 @@
+spacetime publish stdbmc -c -d

@@ -1,4 +1,7 @@
 using Godot;
+using StDBCraft.Scenes.Chunk;
+using StDBCraft.Scenes.ChunkManager;
+using StDBCraft.Scripts;
 
 namespace StDBCraft.Entities.Player;
 
@@ -37,7 +40,7 @@ public partial class Player : CharacterBody3D
             BlockHighlight.GlobalPosition = intBlockPosition + new Vector3(0.5f, 0.5f, 0.5f);
 
             if (Input.IsActionJustPressed("Break"))
-                ChunkManager.Instance.SetBlock(intBlockPosition, BlockManager.Instance.Air);
+                ChunkManager.Instance.SetBlock(intBlockPosition, BlockManager.Instance.Blocks[0]);
             if (Input.IsActionJustPressed("Place"))
             {
                 var placeAt = (Vector3I)(intBlockPosition + RayCast.GetCollisionNormal());
@@ -46,7 +49,7 @@ public partial class Player : CharacterBody3D
                 ShapeCast.ForceShapecastUpdate();
                 if (ShapeCast.IsColliding()) return;
 
-                ChunkManager.Instance.SetBlock(placeAt, BlockManager.Instance.Stone);
+                ChunkManager.Instance.SetBlock(placeAt, BlockManager.Instance.Blocks[0]);
             }
         }
         else

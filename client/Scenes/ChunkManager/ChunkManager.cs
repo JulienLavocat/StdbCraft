@@ -2,18 +2,21 @@ using System.Collections.Generic;
 using System.Threading;
 using Godot;
 using StDBCraft.Entities.Player;
+using StdbCraft.SpacetimeDb;
+
+namespace StDBCraft.Scenes.ChunkManager;
 
 public partial class ChunkManager : Node
 {
-    private readonly List<Chunk> _chunks = new();
+    private readonly List<Chunk.Chunk> _chunks = new();
+    private readonly Godot.Collections.Dictionary<Chunk.Chunk, Vector2I> _chunkToPosition = new();
 
     private readonly object _playerPositionLock = new();
-    private Godot.Collections.Dictionary<Chunk, Vector2I> _chunkToPosition = new();
+    private readonly Godot.Collections.Dictionary<Vector2I, Chunk.Chunk> _positionToChunk = new();
+
+    private readonly int _viewRadius = 5;
 
     private Vector3 _playerPosition;
-    private Godot.Collections.Dictionary<Vector2I, Chunk> _positionToChunk = new();
-
-    private int _viewRadius = 5;
 
     public static ChunkManager Instance { get; private set; }
 
@@ -23,11 +26,15 @@ public partial class ChunkManager : Node
     public override void _Ready()
     {
         Instance = this;
+    }
 
+    public void StartChunkGeneration(int seed)
+    {
+        Noise.Seed = seed;
         var halfViewRadius = _viewRadius / 2;
         for (var i = 0; i < _viewRadius * _viewRadius; i++)
         {
-            var chunk = ChunkScene.InstantiateOrNull<Chunk>();
+            var chunk = ChunkScene.InstantiateOrNull<Chunk.Chunk>();
             chunk.Noise = Noise;
             _chunks.Add(chunk);
             CallDeferred(Node.MethodName.AddChild, chunk);
@@ -37,7 +44,7 @@ public partial class ChunkManager : Node
         new Thread(ThreadProcess).Start();
     }
 
-    public void UpdateChunkPosition(Chunk chunk, Vector2I currentPosition, Vector2I previousPosition)
+    public void UpdateChunkPosition(Chunk.Chunk chunk, Vector2I currentPosition, Vector2I previousPosition)
     {
         lock (_positionToChunk)
         {
@@ -61,8 +68,8 @@ public partial class ChunkManager : Node
 
     public static Vector2I WorldToChunk(Vector3I worldPosition)
     {
-        return new Vector2I(Mathf.FloorToInt(worldPosition.X / (float)Chunk.Dimensions.X),
-            Mathf.FloorToInt(worldPosition.Z / (float)Chunk.Dimensions.Z));
+        return new Vector2I(Mathf.FloorToInt(worldPosition.X / (float)Chunk.Chunk.Dimensions.X),
+            Mathf.FloorToInt(worldPosition.Z / (float)Chunk.Chunk.Dimensions.Z));
     }
 
     public override void _PhysicsProcess(double delta)
@@ -83,8 +90,8 @@ public partial class ChunkManager : Node
             int playerChunkX;
             lock (_playerPositionLock)
             {
-                playerChunkX = Mathf.FloorToInt(_playerPosition.X / Chunk.Dimensions.X);
-                playerChunkZ = Mathf.FloorToInt(_playerPosition.Z / Chunk.Dimensions.Z);
+                playerChunkX = Mathf.FloorToInt(_playerPosition.X / Chunk.Chunk.Dimensions.X);
+                playerChunkZ = Mathf.FloorToInt(_playerPosition.Z / Chunk.Chunk.Dimensions.Z);
             }
 
             foreach (var chunk in _chunks)
@@ -114,7 +121,7 @@ public partial class ChunkManager : Node
                     _chunkToPosition[chunk] = newPosition;
                     _positionToChunk[newPosition] = chunk;
 
-                    chunk.CallDeferred(nameof(Chunk.SetChunkPosition), newPosition);
+                    chunk.CallDeferred(nameof(Chunk.Chunk.SetChunkPosition), newPosition);
                 }
 
                 Thread.Sleep(100);
