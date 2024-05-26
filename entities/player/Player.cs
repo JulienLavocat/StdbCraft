@@ -1,16 +1,20 @@
 using Godot;
 
+namespace StDBCraft.Entities.Player;
+
 public partial class Player : CharacterBody3D
 {
     private float _cameraXRotation;
-    private float _gravity = ProjectSettings.GetSetting("physics/3d/default_gravity").AsSingle();
-    [Export] private float _jumpVelocity = 10f;
+    [Export] private float _gravity = ProjectSettings.GetSetting("physics/3d/default_gravity").AsSingle();
+    [Export] private float _jumpVelocity = 12f;
     [Export] private float _mouseSensitivity = 0.35f;
     [Export] private float _movementSpeed = 10f;
 
-    [Export] public RayCast3D RayCast { get; set; }
+    [Export] private RayCast3D RayCast { get; set; }
     [Export] public MeshInstance3D BlockHighlight { get; set; }
-    [Export] public ShapeCast3D ShapeCast { get; set; }
+    [Export] private ShapeCast3D ShapeCast { get; set; }
+    [Export] private Node3D Head { get; set; }
+    [Export] private Camera3D Camera { get; set; }
 
     public static Player Instance { get; private set; }
 
@@ -49,5 +53,42 @@ public partial class Player : CharacterBody3D
         {
             BlockHighlight.Visible = false;
         }
+    }
+
+    public static Vector2 GetInputDirection()
+    {
+        return Input.GetVector("Left", "Right", "Back", "Forward").Normalized();
+    }
+
+    public void ProcessRotationInput(InputEvent @event)
+    {
+        if (@event is not InputEventMouseMotion mouseMotion) return;
+
+        var deltaX = mouseMotion.Relative.Y * _mouseSensitivity;
+        var deltaY = -mouseMotion.Relative.X * _mouseSensitivity;
+
+        Head.RotateY(Mathf.DegToRad(deltaY));
+
+        if (!(_cameraXRotation + deltaX > -91) || !(_cameraXRotation + deltaX < 90)) return;
+        Camera.RotateX(Mathf.DegToRad(-deltaX));
+        _cameraXRotation += deltaX;
+    }
+
+    public void ProcessMovement(double delta, float speed, bool withGravity = true)
+    {
+        var velocity = Velocity;
+
+        if (withGravity && !IsOnFloor()) velocity.Y -= _gravity * (float)delta;
+
+        var inputDirection = Input.GetVector("Left", "Right", "Back", "Forward").Normalized();
+        var direction = Vector3.Zero;
+        direction += inputDirection.X * Head.GlobalBasis.X;
+        direction += inputDirection.Y * -Head.GlobalBasis.Z;
+
+        velocity.X = direction.X * speed;
+        velocity.Z = direction.Z * speed;
+
+        Velocity = velocity;
+        MoveAndSlide();
     }
 }

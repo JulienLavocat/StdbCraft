@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using Godot;
+using StDBCraft.Entities.Player;
 
 public partial class ChunkManager : Node
 {
@@ -12,7 +13,7 @@ public partial class ChunkManager : Node
     private Vector3 _playerPosition;
     private Godot.Collections.Dictionary<Vector2I, Chunk> _positionToChunk = new();
 
-    private int _viewRadius = 12;
+    private int _viewRadius = 5;
 
     public static ChunkManager Instance { get; private set; }
 

@@ -1,9 +1,12 @@
-[gd_scene load_steps=9 format=3 uid="uid://ds7t06g4naxuw"]
+[gd_scene load_steps=12 format=3 uid="uid://ds7t06g4naxuw"]
 
 [ext_resource type="Script" path="res://Entities/Player/Player.cs" id="1_mfjix"]
-[ext_resource type="Script" path="res://Entities/Player/MoveComponent.cs" id="2_46gwm"]
+[ext_resource type="Script" path="res://Scripts/StateMachine/Fsm.cs" id="2_dkhgo"]
+[ext_resource type="Script" path="res://Entities/Player/States/Idle.cs" id="3_33ayt"]
 [ext_resource type="Script" path="res://Entities/Player/DebugInfo.cs" id="3_diggn"]
+[ext_resource type="Script" path="res://Entities/Player/States/Running.cs" id="4_6khyj"]
 [ext_resource type="Texture2D" uid="uid://dex3ujeg34uo" path="res://Textures/UI/crosshair.png" id="4_hs5wg"]
+[ext_resource type="Script" path="res://Entities/Player/States/Jumping.cs" id="5_80stw"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_pgkoh"]
 radius = 0.45
@@ -15,16 +18,34 @@ albedo_color = Color(1, 1, 0.32549, 0.156863)
 
 [sub_resource type="BoxMesh" id="BoxMesh_wl6gw"]
 material = SubResource("StandardMaterial3D_dtwtt")
-size = Vector3(1.05, 1.05, 1.05)
+size = Vector3(1.02, 1.02, 1.02)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_vrqte"]
 size = Vector3(0.95, 0.95, 0.95)
 
-[node name="Player" type="CharacterBody3D" node_paths=PackedStringArray("RayCast", "BlockHighlight", "ShapeCast")]
+[node name="Player" type="CharacterBody3D" node_paths=PackedStringArray("RayCast", "BlockHighlight", "ShapeCast", "Head", "Camera")]
 script = ExtResource("1_mfjix")
 RayCast = NodePath("Head/Camera3D/RayCast3D")
 BlockHighlight = NodePath("BlockHighlight")
 ShapeCast = NodePath("ShapeCast3D")
+Head = NodePath("Head")
+Camera = NodePath("Head/Camera3D")
+
+[node name="StateMachine" type="Node" parent="." node_paths=PackedStringArray("CurrentState")]
+script = ExtResource("2_dkhgo")
+CurrentState = NodePath("Idle")
+
+[node name="Idle" type="Node" parent="StateMachine"]
+script = ExtResource("3_33ayt")
+
+[node name="Running" type="Node" parent="StateMachine" node_paths=PackedStringArray("CharacterBody", "Head")]
+script = ExtResource("4_6khyj")
+CharacterBody = NodePath("../..")
+Head = NodePath("../../Head")
+
+[node name="Jumping" type="Node" parent="StateMachine" node_paths=PackedStringArray("CharacterBody")]
+script = ExtResource("5_80stw")
+CharacterBody = NodePath("../..")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 shape = SubResource("CapsuleShape3D_pgkoh")
@@ -39,12 +60,6 @@ target_position = Vector3(0, 0, -5)
 
 [node name="BlockHighlight" type="MeshInstance3D" parent="."]
 mesh = SubResource("BoxMesh_wl6gw")
-
-[node name="MoveComponent" type="Node3D" parent="." node_paths=PackedStringArray("CharacterBody", "Head", "Camera")]
-script = ExtResource("2_46gwm")
-CharacterBody = NodePath("..")
-Head = NodePath("../Head")
-Camera = NodePath("../Head/Camera3D")
 
 [node name="ShapeCast3D" type="ShapeCast3D" parent="."]
 shape = SubResource("BoxShape3D_vrqte")
