@@ -19,14 +19,14 @@ public partial class Jumping : FsmState
 
     public override void OnProcess(double delta)
     {
-        if (CharacterBody.IsOnFloor())
-            ChangeState("Idle");
-        else if (Input.IsActionJustPressed("Jump")) ChangeState("Flying");
+        if (Input.IsActionJustPressed("Jump")) ChangeState("Flying");
     }
 
     public override void OnPhysicsProcess(double delta)
     {
         Player.Instance.ProcessMovement(delta, _walkSpeed);
+        if (CharacterBody.IsOnFloor())
+            ChangeState("Idle");
     }
 
     public override void OnInput(InputEvent @event)
