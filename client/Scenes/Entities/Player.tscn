@@ -1,13 +1,13 @@
 [gd_scene load_steps=14 format=3 uid="uid://ds7t06g4naxuw"]
 
-[ext_resource type="Script" path="res://Entities/Player/Player.cs" id="1_mfjix"]
+[ext_resource type="Script" path="res://Scripts/Entities/Player.cs" id="1_r0j3g"]
 [ext_resource type="Script" path="res://Scripts/StateMachine/Fsm.cs" id="2_dkhgo"]
-[ext_resource type="Script" path="res://Entities/Player/States/Idle.cs" id="3_33ayt"]
-[ext_resource type="Script" path="res://Entities/Player/DebugInfo.cs" id="3_diggn"]
-[ext_resource type="Script" path="res://Entities/Player/States/Running.cs" id="4_6khyj"]
+[ext_resource type="Script" path="res://Scripts/Entities/States/Idle.cs" id="3_hfj2m"]
 [ext_resource type="Texture2D" uid="uid://dex3ujeg34uo" path="res://Textures/UI/crosshair.png" id="4_hs5wg"]
-[ext_resource type="Script" path="res://Entities/Player/States/Jumping.cs" id="5_80stw"]
-[ext_resource type="Script" path="res://Entities/Player/States/Flying.cs" id="6_vn1cs"]
+[ext_resource type="Script" path="res://Scripts/Entities/States/Running.cs" id="4_u712l"]
+[ext_resource type="Script" path="res://Scripts/Entities/States/Jumping.cs" id="5_rha8y"]
+[ext_resource type="Script" path="res://Scripts/Entities/States/Flying.cs" id="6_026go"]
+[ext_resource type="Script" path="res://Scripts/Entities/DebugInfo.cs" id="7_onaw1"]
 [ext_resource type="PackedScene" uid="uid://cltefhlnrkfda" path="res://Scenes/UI/Hotbar/Hotbar.tscn" id="9_xqq0m"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_pgkoh"]
@@ -26,7 +26,7 @@ size = Vector3(1.02, 1.02, 1.02)
 size = Vector3(0.95, 0.95, 0.95)
 
 [node name="Player" type="CharacterBody3D" node_paths=PackedStringArray("RayCast", "BlockHighlight", "ShapeCast", "Head", "Camera")]
-script = ExtResource("1_mfjix")
+script = ExtResource("1_r0j3g")
 RayCast = NodePath("Head/Camera3D/RayCast3D")
 BlockHighlight = NodePath("BlockHighlight")
 ShapeCast = NodePath("ShapeCast3D")
@@ -38,19 +38,19 @@ script = ExtResource("2_dkhgo")
 CurrentState = NodePath("Idle")
 
 [node name="Idle" type="Node" parent="StateMachine"]
-script = ExtResource("3_33ayt")
+script = ExtResource("3_hfj2m")
 
 [node name="Running" type="Node" parent="StateMachine" node_paths=PackedStringArray("CharacterBody", "Head")]
-script = ExtResource("4_6khyj")
+script = ExtResource("4_u712l")
 CharacterBody = NodePath("../..")
 Head = NodePath("../../Head")
 
 [node name="Jumping" type="Node" parent="StateMachine" node_paths=PackedStringArray("CharacterBody")]
-script = ExtResource("5_80stw")
+script = ExtResource("5_rha8y")
 CharacterBody = NodePath("../..")
 
 [node name="Flying" type="Node" parent="StateMachine" node_paths=PackedStringArray("CharacterBody")]
-script = ExtResource("6_vn1cs")
+script = ExtResource("6_026go")
 CharacterBody = NodePath("../..")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
@@ -85,7 +85,7 @@ grow_vertical = 2
 layout_mode = 1
 offset_right = 1.0
 offset_bottom = 23.0
-script = ExtResource("3_diggn")
+script = ExtResource("7_onaw1")
 
 [node name="CenterContainer" type="CenterContainer" parent="UI"]
 layout_mode = 1

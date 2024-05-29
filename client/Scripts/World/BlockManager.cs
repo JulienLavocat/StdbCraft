@@ -1,10 +1,10 @@
 using System.Linq;
 using Godot;
 using Godot.Collections;
+using StdbCraft.Scripts.SpacetimeDb;
 using StDBCraft.Scripts.Utils;
-using Block = StdbCraft.SpacetimeDb.Block;
 
-namespace StDBCraft.Scripts;
+namespace StDBCraft.Scripts.World;
 
 public partial class BlockManager : Node
 {

@@ -6,7 +6,7 @@ using SpacetimeDB;
 using ClientApi;
 using Newtonsoft.Json.Linq;
 
-namespace StdbCraft.SpacetimeDb
+namespace StdbCraft.Scripts.SpacetimeDb
 {
 	public enum ReducerType
 	{

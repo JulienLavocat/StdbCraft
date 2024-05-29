@@ -1,5 +1,7 @@
 using Godot;
-using StDBCraft.Entities.Player;
+using StDBCraft.Scripts.World;
+
+namespace StDBCraft.Scripts.Entities;
 
 public partial class DebugInfo : Label
 {
@@ -14,7 +16,7 @@ public partial class DebugInfo : Label
         Text =
             @$"FPS: {Engine.GetFramesPerSecond()}
 Position: ({playerPos.X:F2},{playerPos.Y:F2},{playerPos.Z:F2})
-Chunk: {StDBCraft.Scenes.ChunkManager.ChunkManager.WorldToChunk((Vector3I)Player.Instance.GlobalPosition)}
+Chunk: {ChunkManager.WorldToChunk((Vector3I)Player.Instance.GlobalPosition)}
 LookingAt: {lookingAt}
 ";
     }

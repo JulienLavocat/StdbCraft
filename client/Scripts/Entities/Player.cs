@@ -1,9 +1,9 @@
 using Godot;
-using StDBCraft.Scenes.Chunk;
-using StDBCraft.Scenes.ChunkManager;
-using StDBCraft.Scripts;
+using StDBCraft.Scripts.World;
+using Chunk = StDBCraft.Scripts.World.Chunk;
+using ChunkManager = StDBCraft.Scripts.World.ChunkManager;
 
-namespace StDBCraft.Entities.Player;
+namespace StDBCraft.Scripts.Entities;
 
 public partial class Player : CharacterBody3D
 {

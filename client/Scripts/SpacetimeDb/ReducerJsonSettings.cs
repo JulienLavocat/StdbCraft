@@ -4,7 +4,7 @@
 using System;
 using SpacetimeDB;
 
-namespace StdbCraft.SpacetimeDb
+namespace StdbCraft.Scripts.SpacetimeDb
 {
 	[ReducerClass]
 	public partial class Reducer

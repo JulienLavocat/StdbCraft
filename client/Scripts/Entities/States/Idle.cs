@@ -1,7 +1,7 @@
 using Godot;
 using StDBCraft.Scripts.StateMachine;
 
-namespace StDBCraft.Entities.Player.States;
+namespace StDBCraft.Scripts.Entities.States;
 
 [GlobalClass]
 public partial class Idle : FsmState

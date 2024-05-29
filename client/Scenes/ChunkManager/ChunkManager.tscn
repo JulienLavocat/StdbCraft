@@ -1,8 +1,0 @@
-[gd_scene load_steps=3 format=3 uid="uid://c5shy618l0o2g"]
-
-[ext_resource type="Script" path="res://Scenes/ChunkManager/ChunkManager.cs" id="1_ekcbf"]
-[ext_resource type="PackedScene" uid="uid://77br0vjxwuba" path="res://Scenes/Chunk/Chunk.tscn" id="2_23pul"]
-
-[node name="ChunkManager" type="Node"]
-script = ExtResource("1_ekcbf")
-ChunkScene = ExtResource("2_23pul")

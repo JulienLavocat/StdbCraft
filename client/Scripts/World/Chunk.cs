@@ -1,8 +1,7 @@
 using Godot;
-using StDBCraft.Scripts;
-using StdbCraft.SpacetimeDb;
+using StdbCraft.Scripts.SpacetimeDb;
 
-namespace StDBCraft.Scenes.Chunk;
+namespace StDBCraft.Scripts.World;
 
 public partial class Chunk : StaticBody3D
 {
@@ -40,7 +39,7 @@ public partial class Chunk : StaticBody3D
 
     public void SetChunkPosition(Vector2I position)
     {
-        ChunkManager.ChunkManager.Instance.UpdateChunkPosition(this, position, ChunkPosition);
+        ChunkManager.Instance.UpdateChunkPosition(this, position, ChunkPosition);
         ChunkPosition = position;
         MeshInstance.Mesh = null;
         CallDeferred(Node3D.MethodName.SetGlobalPosition,
