@@ -49,7 +49,7 @@ public partial class Player : CharacterBody3D
                 ShapeCast.ForceShapecastUpdate();
                 if (ShapeCast.IsColliding()) return;
 
-                ChunkManager.Instance.SetBlock(placeAt, BlockManager.Instance.Blocks[0]);
+                ChunkManager.Instance.SetBlock(placeAt, BlockManager.Instance.Blocks[1]);
             }
         }
         else
