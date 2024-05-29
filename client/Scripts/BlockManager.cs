@@ -1,6 +1,7 @@
 using System.Linq;
 using Godot;
 using Godot.Collections;
+using StDBCraft.Scripts.Utils;
 using Block = StdbCraft.SpacetimeDb.Block;
 
 namespace StDBCraft.Scripts;
@@ -9,11 +10,12 @@ public partial class BlockManager : Node
 {
     private const int GridWidth = 4;
     private readonly Dictionary<Texture2D, Vector2I> _atlasLookup = new();
+    private readonly Logger _logger = new(typeof(BlockManager));
     private int _gridHeight;
 
     [Export] private Texture2D[] _textures;
 
-    public Vector2I BlockTextureSize { get; set; } = new(16, 16);
+    private Vector2I BlockTextureSize { get; set; } = new(16, 16);
     public Vector2 TextureAtlasSize { get; private set; }
 
     public static BlockManager Instance { get; private set; }
@@ -67,7 +69,7 @@ public partial class BlockManager : Node
         };
 
         TextureAtlasSize = new Vector2(GridWidth, _gridHeight);
-        GD.Print($"Done loading {blockTextures.Length} images to make {GridWidth}x{_gridHeight} atlas");
+        _logger.Info($"Loaded {blockTextures.Length} into a {GridWidth}x{_gridHeight} texture atlas");
     }
 
     public Vector2I GetTextureAtlasPosition(int textureIndex)

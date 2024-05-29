@@ -1,5 +1,6 @@
 using System.Linq;
 using Godot;
+using StDBCraft.Entities.Player;
 using StDBCraft.Scripts;
 using StDBCraft.Scripts.Utils;
 using StdbCraft.SpacetimeDb;
@@ -10,7 +11,11 @@ public partial class GameManager : Node
 {
     private readonly Logger _logger = new(typeof(GameManager));
 
-    [Export] public ChunkManager.ChunkManager ChunkManager { get; set; }
+    private ChunkManager.ChunkManager _chunkManager;
+
+    [Export] public PackedScene LocalPlayerScene { get; set; }
+    [Export] public PackedScene ChunkManagerScene { get; set; }
+    [Export] public FastNoiseLite Noise { get; set; }
 
     public override void _Ready()
     {
@@ -25,13 +30,16 @@ public partial class GameManager : Node
 
     private void InitialiseWorld()
     {
-        // TODO: 
-        // 4. Spawn player above the uppermost block of 0.0
-
+        BlockManager.Instance.GenerateTextureAtlas();
 
         var wi = WorldInfos.Iter().First();
+        _chunkManager = ChunkManagerScene.Instantiate<ChunkManager.ChunkManager>();
+        _chunkManager.Noise = Noise;
+        AddChild(_chunkManager);
+        _chunkManager.StartChunkGeneration(wi.Seed);
 
-        BlockManager.Instance.GenerateTextureAtlas();
-        ChunkManager.StartChunkGeneration(wi.Seed);
+        var player = LocalPlayerScene.Instantiate<Player>();
+        AddChild(player);
+        player.GlobalPosition = new Vector3(0, 100, 0);
     }
 }

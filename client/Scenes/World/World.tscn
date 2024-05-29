@@ -1,8 +1,7 @@
-[gd_scene load_steps=16 format=3 uid="uid://du4jeotpmd58o"]
+[gd_scene load_steps=15 format=3 uid="uid://du4jeotpmd58o"]
 
 [ext_resource type="PackedScene" uid="uid://ddxf5aoas4r33" path="res://Scenes/GameManager/GameManager.tscn" id="1_fc4p3"]
 [ext_resource type="PackedScene" uid="uid://c5shy618l0o2g" path="res://Scenes/ChunkManager/ChunkManager.tscn" id="1_otvmw"]
-[ext_resource type="PackedScene" uid="uid://77br0vjxwuba" path="res://Scenes/Chunk/Chunk.tscn" id="2_7rnt5"]
 [ext_resource type="Script" path="res://Scripts/BlockManager.cs" id="3_kwbef"]
 [ext_resource type="Texture2D" uid="uid://cisd1b1hm4yny" path="res://Textures/Blocks/stone.png" id="5_j0aps"]
 [ext_resource type="Texture2D" uid="uid://vifchmkrb3gj" path="res://Textures/Blocks/dirt.png" id="6_usedt"]
@@ -21,27 +20,21 @@ sky_material = SubResource("ProceduralSkyMaterial_rvjpw")
 background_mode = 2
 sky = SubResource("Sky_s3tot")
 
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_8nmsg"]
-fractal_weighted_strength = 0.57
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_etxj3"]
 
 [node name="World" type="Node3D"]
-
-[node name="GameManager" parent="." node_paths=PackedStringArray("ChunkManager") instance=ExtResource("1_fc4p3")]
-ChunkManager = NodePath("../ChunkManager")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_hutiv")
 
-[node name="ChunkManager" parent="." instance=ExtResource("1_otvmw")]
-ChunkScene = ExtResource("2_7rnt5")
-Noise = SubResource("FastNoiseLite_8nmsg")
+[node name="GameManager" parent="." instance=ExtResource("1_fc4p3")]
+LocalPlayerScene = ExtResource("9_t8nd6")
+ChunkManagerScene = ExtResource("1_otvmw")
+Noise = SubResource("FastNoiseLite_etxj3")
 
 [node name="BlockManager" type="Node" parent="."]
 script = ExtResource("3_kwbef")
 _textures = Array[Texture2D]([ExtResource("5_j0aps"), ExtResource("6_usedt"), ExtResource("7_1ky76"), ExtResource("8_2fw8l"), ExtResource("9_j1r34"), ExtResource("10_b6ob1")])
-
-[node name="Player" parent="." instance=ExtResource("9_t8nd6")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 70.4793, 0)
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.654899, 0.755716, 0, -0.755716, 0.654899, 0, 37.3323, -10.2743)
