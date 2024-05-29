@@ -59,14 +59,14 @@ public partial class Chunk : StaticBody3D
             var groundHeight =
                 (int)(Dimensions.Y * ((Noise.GetNoise2D(globalBlockPosition.X, globalBlockPosition.Y) + 1f) / 2f));
 
-            var blockId = 0;
-            if (y == groundHeight - 1) blockId = 4;
-            else if (y == groundHeight - 2) blockId = 5;
+            var blockId = 1; // air
+            if (y == groundHeight - 1) blockId = 5;
+            else if (y == groundHeight - 2) blockId = 6;
             else if (y < groundHeight - 4)
-                blockId = 1;
-            else if (y < groundHeight)
                 blockId = 2;
-            else if (y == groundHeight) blockId = 3;
+            else if (y < groundHeight)
+                blockId = 3;
+            else if (y == groundHeight) blockId = 4;
 
             _blocks[x, y, z] = BlockManager.Blocks[blockId];
         }

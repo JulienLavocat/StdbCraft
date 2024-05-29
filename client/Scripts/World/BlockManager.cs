@@ -1,6 +1,6 @@
+using System.Collections.Generic;
 using System.Linq;
 using Godot;
-using Godot.Collections;
 using StdbCraft.Scripts.SpacetimeDb;
 using StDBCraft.Scripts.Utils;
 
@@ -9,7 +9,7 @@ namespace StDBCraft.Scripts.World;
 public static class BlockManager
 {
     private const int GridWidth = 4;
-    private static readonly Dictionary<Texture2D, Vector2I> AtlasLookup = new();
+    private static readonly Godot.Collections.Dictionary<Texture2D, Vector2I> AtlasLookup = new();
     private static readonly Logger Logger = new(typeof(BlockManager));
     private static int _gridHeight;
 
@@ -20,11 +20,20 @@ public static class BlockManager
 
     public static StandardMaterial3D ChunkMaterial { get; private set; }
 
-    public static Block[] Blocks { get; private set; }
+    public static List<Block> Blocks { get; private set; }
 
     public static void GenerateTextureAtlas()
     {
-        Blocks = Block.Iter().ToArray();
+        Blocks = Block.Iter().ToList();
+        // This block shouldn't be used, it's just an offset for SpacetimeDB since the autoinc starts at 1 
+        Blocks.Insert(0, new Block
+        {
+            Side = -1,
+            Bottom = -1,
+            IsTransparent = true,
+            Top = -1,
+            Id = 0
+        });
         var blockTextures = Block.Iter().SelectMany(b => new[] { b.Top, b.Bottom, b.Side }).Where(index => index != -1)
             .Distinct().Select(textureIndex => _textures[textureIndex]).ToArray();
 
@@ -68,6 +77,11 @@ public static class BlockManager
     {
         var texture = _textures[textureIndex];
         return texture == null ? Vector2I.Zero : AtlasLookup[texture];
+    }
+
+    public static Texture2D GetTexture(int textureId)
+    {
+        return _textures[textureId];
     }
 
     public static void SetTextures(Texture2D[] textures)

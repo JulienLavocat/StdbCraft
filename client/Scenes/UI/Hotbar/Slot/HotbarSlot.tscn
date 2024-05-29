@@ -1,17 +1,25 @@
 [gd_scene load_steps=2 format=3 uid="uid://dehqeodargt4q"]
 
-[ext_resource type="Texture2D" uid="uid://cejdfsf1u3e56" path="res://Textures/Blocks/grass_side.png" id="1_l5r8r"]
+[ext_resource type="Script" path="res://Scripts/Ui/Hotbar/Slot.cs" id="1_hx110"]
 
-[node name="HotbarSlot" type="Control"]
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
+[node name="HotbarSlot" type="MarginContainer" node_paths=PackedStringArray("Item", "Background")]
+custom_minimum_size = Vector2(64, 64)
+offset_right = 64.0
+offset_bottom = 64.0
+script = ExtResource("1_hx110")
+Item = NodePath("MarginContainer/Item")
+Background = NodePath("Background")
 
-[node name="TextureRect" type="TextureRect" parent="."]
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
-texture = ExtResource("1_l5r8r")
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 2
+color = Color(0.229593, 0.229593, 0.229593, 0.576471)
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 3
+theme_override_constants/margin_top = 3
+theme_override_constants/margin_right = 3
+theme_override_constants/margin_bottom = 3
+
+[node name="Item" type="TextureRect" parent="MarginContainer"]
+layout_mode = 2

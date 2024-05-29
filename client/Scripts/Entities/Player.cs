@@ -13,6 +13,8 @@ public partial class Player : CharacterBody3D
     [Export] private float _mouseSensitivity = 0.35f;
     [Export] private float _movementSpeed = 10f;
 
+    private int _selectedBlockId;
+
     [Export] private RayCast3D RayCast { get; set; }
     [Export] public MeshInstance3D BlockHighlight { get; set; }
     [Export] private ShapeCast3D ShapeCast { get; set; }
@@ -25,6 +27,7 @@ public partial class Player : CharacterBody3D
     {
         Instance = this;
         Input.MouseMode = Input.MouseModeEnum.Captured;
+        Signals.Instance.OnSelectedHotbarSlot += (_, blockId) => { _selectedBlockId = blockId; };
     }
 
     public override void _Process(double delta)
@@ -92,7 +95,7 @@ public partial class Player : CharacterBody3D
         ShapeCast.ForceShapecastUpdate();
         if (ShapeCast.IsColliding()) return;
 
-        ChunkManager.Instance.SetBlock(placeAt, BlockManager.Blocks[1]);
+        ChunkManager.Instance.SetBlock(placeAt, BlockManager.Blocks[_selectedBlockId]);
     }
 
     private void BreakBlock(Vector3I breakAt)

@@ -36,6 +36,7 @@ public partial class GameManager : Node
         BlockManager.SetTextures(Textures);
         BlockManager.GenerateTextureAtlas();
 
+
         var wi = WorldInfos.Iter().First();
         _chunkManager = ChunkManagerScene.Instantiate<ChunkManager>();
         _chunkManager.Noise = Noise;
