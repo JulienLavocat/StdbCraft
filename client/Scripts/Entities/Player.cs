@@ -29,33 +29,24 @@ public partial class Player : CharacterBody3D
 
     public override void _Process(double delta)
     {
-        if (RayCast.IsColliding() && RayCast.GetCollider() is Chunk)
-        {
-            BlockHighlight.Visible = true;
-
-            var blockPosition = RayCast.GetCollisionPoint() - 0.5f * RayCast.GetCollisionNormal();
-            var intBlockPosition = new Vector3I(Mathf.FloorToInt(blockPosition.X), Mathf.FloorToInt(blockPosition.Y),
-                Mathf.FloorToInt(blockPosition.Z));
-
-            BlockHighlight.GlobalPosition = intBlockPosition + new Vector3(0.5f, 0.5f, 0.5f);
-
-            if (Input.IsActionJustPressed("Break"))
-                ChunkManager.Instance.SetBlock(intBlockPosition, BlockManager.Instance.Blocks[0]);
-            if (Input.IsActionJustPressed("Place"))
-            {
-                var placeAt = (Vector3I)(intBlockPosition + RayCast.GetCollisionNormal());
-
-                ShapeCast.GlobalPosition = placeAt + new Vector3(0.5f, 0.5f, 0.5f);
-                ShapeCast.ForceShapecastUpdate();
-                if (ShapeCast.IsColliding()) return;
-
-                ChunkManager.Instance.SetBlock(placeAt, BlockManager.Instance.Blocks[1]);
-            }
-        }
-        else
+        if (!RayCast.IsColliding() || RayCast.GetCollider() is not Chunk)
         {
             BlockHighlight.Visible = false;
+            return;
         }
+
+        BlockHighlight.Visible = true;
+
+        var collisionPoint = RayCast.GetCollisionPoint() - 0.5f * RayCast.GetCollisionNormal();
+        var blockPosition = new Vector3I(Mathf.FloorToInt(collisionPoint.X), Mathf.FloorToInt(collisionPoint.Y),
+            Mathf.FloorToInt(collisionPoint.Z));
+
+        BlockHighlight.GlobalPosition = blockPosition + new Vector3(0.5f, 0.5f, 0.5f);
+
+        if (Input.IsActionJustPressed("Break"))
+            BreakBlock(blockPosition);
+        if (Input.IsActionJustPressed("Place"))
+            PlaceBlock((Vector3I)(blockPosition + RayCast.GetCollisionNormal()));
     }
 
     public static Vector2 GetInputDirection()
@@ -93,5 +84,19 @@ public partial class Player : CharacterBody3D
 
         Velocity = velocity;
         MoveAndSlide();
+    }
+
+    private void PlaceBlock(Vector3I placeAt)
+    {
+        ShapeCast.GlobalPosition = placeAt + new Vector3(0.5f, 0.5f, 0.5f);
+        ShapeCast.ForceShapecastUpdate();
+        if (ShapeCast.IsColliding()) return;
+
+        ChunkManager.Instance.SetBlock(placeAt, BlockManager.Blocks[1]);
+    }
+
+    private void BreakBlock(Vector3I breakAt)
+    {
+        ChunkManager.Instance.SetBlock(breakAt, BlockManager.Blocks[0]);
     }
 }

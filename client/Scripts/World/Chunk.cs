@@ -68,7 +68,7 @@ public partial class Chunk : StaticBody3D
                 blockId = 2;
             else if (y == groundHeight) blockId = 3;
 
-            _blocks[x, y, z] = BlockManager.Instance.Blocks[blockId];
+            _blocks[x, y, z] = BlockManager.Blocks[blockId];
         }
     }
 
@@ -88,7 +88,7 @@ public partial class Chunk : StaticBody3D
         for (var z = 0; z < Dimensions.Z; z++)
             CreateBlockMesh(new Vector3I(x, y, z));
 
-        _surfaceTool.SetMaterial(BlockManager.Instance.ChunkMaterial);
+        _surfaceTool.SetMaterial(BlockManager.ChunkMaterial);
 
         var mesh = _surfaceTool.Commit();
         var collisionShape = mesh.CreateTrimeshShape();
@@ -120,8 +120,8 @@ public partial class Chunk : StaticBody3D
     {
         if (textureIndex == -1) return;
 
-        var texturePosition = BlockManager.Instance.GetTextureAtlasPosition(textureIndex);
-        var textureAtlasSize = BlockManager.Instance.TextureAtlasSize;
+        var texturePosition = BlockManager.GetTextureAtlasPosition(textureIndex);
+        var textureAtlasSize = BlockManager.TextureAtlasSize;
 
         var uvOffset = texturePosition / textureAtlasSize;
         var uvWidth = 1f / textureAtlasSize.X;

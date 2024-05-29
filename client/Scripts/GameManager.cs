@@ -17,6 +17,7 @@ public partial class GameManager : Node
     [Export] public PackedScene LocalPlayerScene { get; set; }
     [Export] public PackedScene ChunkManagerScene { get; set; }
     [Export] public FastNoiseLite Noise { get; set; }
+    [Export] public Texture2D[] Textures { get; set; }
 
     public override void _Ready()
     {
@@ -32,7 +33,8 @@ public partial class GameManager : Node
     private void InitialiseWorld()
     {
         _logger.Info("Initialising world");
-        BlockManager.Instance.GenerateTextureAtlas();
+        BlockManager.SetTextures(Textures);
+        BlockManager.GenerateTextureAtlas();
 
         var wi = WorldInfos.Iter().First();
         _chunkManager = ChunkManagerScene.Instantiate<ChunkManager>();

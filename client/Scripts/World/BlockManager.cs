@@ -6,31 +6,23 @@ using StDBCraft.Scripts.Utils;
 
 namespace StDBCraft.Scripts.World;
 
-public partial class BlockManager : Node
+public static class BlockManager
 {
     private const int GridWidth = 4;
-    private readonly Dictionary<Texture2D, Vector2I> _atlasLookup = new();
-    private readonly Logger _logger = new(typeof(BlockManager));
-    private int _gridHeight;
+    private static readonly Dictionary<Texture2D, Vector2I> AtlasLookup = new();
+    private static readonly Logger Logger = new(typeof(BlockManager));
+    private static int _gridHeight;
 
-    [Export] private Texture2D[] _textures;
+    private static Texture2D[] _textures;
 
-    private Vector2I BlockTextureSize { get; set; } = new(16, 16);
-    public Vector2 TextureAtlasSize { get; private set; }
+    private static Vector2I BlockTextureSize { get; } = new(16, 16);
+    public static Vector2 TextureAtlasSize { get; private set; }
 
-    public static BlockManager Instance { get; private set; }
+    public static StandardMaterial3D ChunkMaterial { get; private set; }
 
-    public StandardMaterial3D ChunkMaterial { get; private set; }
+    public static Block[] Blocks { get; private set; }
 
-    public Block[] Blocks { get; private set; }
-
-    public override void _EnterTree()
-    {
-        Instance?.QueueFree();
-        Instance = this;
-    }
-
-    public void GenerateTextureAtlas()
+    public static void GenerateTextureAtlas()
     {
         Blocks = Block.Iter().ToArray();
         var blockTextures = Block.Iter().SelectMany(b => new[] { b.Top, b.Bottom, b.Side }).Where(index => index != -1)
@@ -39,7 +31,7 @@ public partial class BlockManager : Node
         for (var i = 0; i < blockTextures.Length; i++)
         {
             var texture = blockTextures[i];
-            _atlasLookup.Add(texture, new Vector2I(i % GridWidth, Mathf.FloorToInt(i / (float)GridWidth)));
+            AtlasLookup.Add(texture, new Vector2I(i % GridWidth, Mathf.FloorToInt(i / (float)GridWidth)));
         }
 
         _gridHeight = Mathf.CeilToInt(blockTextures.Length / (float)GridWidth);
@@ -69,12 +61,17 @@ public partial class BlockManager : Node
         };
 
         TextureAtlasSize = new Vector2(GridWidth, _gridHeight);
-        _logger.Info($"Loaded {blockTextures.Length} into a {GridWidth}x{_gridHeight} texture atlas");
+        Logger.Info($"Loaded {blockTextures.Length} into a {GridWidth}x{_gridHeight} texture atlas");
     }
 
-    public Vector2I GetTextureAtlasPosition(int textureIndex)
+    public static Vector2I GetTextureAtlasPosition(int textureIndex)
     {
         var texture = _textures[textureIndex];
-        return texture == null ? Vector2I.Zero : _atlasLookup[texture];
+        return texture == null ? Vector2I.Zero : AtlasLookup[texture];
+    }
+
+    public static void SetTextures(Texture2D[] textures)
+    {
+        _textures = textures;
     }
 }
