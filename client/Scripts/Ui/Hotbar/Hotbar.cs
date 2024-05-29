@@ -17,7 +17,6 @@ public partial class Hotbar : HBoxContainer
         foreach (var block in BlockManager.Blocks)
         {
             var textureId = block.Top != -1 ? block.Top : block.Side;
-            GD.Print("Checking ", block.Id, " ", textureId);
             if (textureId == -1) continue;
 
             SetItemAt(slotIndex, BlockManager.GetTexture(textureId), block.Id);
@@ -29,7 +28,6 @@ public partial class Hotbar : HBoxContainer
 
     private void SetItemAt(int slotIndex, Texture2D item, int blockId)
     {
-        GD.Print("Setting ", slotIndex, " ", blockId);
         _slots[slotIndex].SetItem(item, blockId);
     }
 
@@ -39,7 +37,6 @@ public partial class Hotbar : HBoxContainer
         _slots[slotIndex].SetActive(true);
         _activeSlotIndex = slotIndex;
 
-        GD.Print(_activeSlotIndex, " ", _slots[_activeSlotIndex].BlockId);
         Signals.EmitSelectedHotbarSlot(_activeSlotIndex, _slots[_activeSlotIndex].BlockId);
     }
 
