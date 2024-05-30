@@ -130,29 +130,15 @@ namespace StdbCraft.Scripts.SpacetimeDb
 			}
 		}
 
-		public static bool ComparePrimaryKey(SpacetimeDB.SATS.AlgebraicType t, SpacetimeDB.SATS.AlgebraicValue v1, SpacetimeDB.SATS.AlgebraicValue v2)
+		public static bool ComparePrimaryKey(SpacetimeDB.SATS.AlgebraicType t, SpacetimeDB.SATS.AlgebraicValue _v1, SpacetimeDB.SATS.AlgebraicValue _v2)
 		{
-			var primaryColumnValue1 = v1.AsProductValue().elements[0];
-			var primaryColumnValue2 = v2.AsProductValue().elements[0];
-			return SpacetimeDB.SATS.AlgebraicValue.Compare(t.product.elements[0].algebraicType, primaryColumnValue1, primaryColumnValue2);
-		}
-
-		public static SpacetimeDB.SATS.AlgebraicValue GetPrimaryKeyValue(SpacetimeDB.SATS.AlgebraicValue v)
-		{
-			return v.AsProductValue().elements[0];
-		}
-
-		public static SpacetimeDB.SATS.AlgebraicType GetPrimaryKeyType(SpacetimeDB.SATS.AlgebraicType t)
-		{
-			return t.product.elements[0].algebraicType;
+			return false;
 		}
 
 		public delegate void InsertEventHandler(Block insertedValue, StdbCraft.Scripts.SpacetimeDb.ReducerEvent dbEvent);
-		public delegate void UpdateEventHandler(Block oldValue, Block newValue, StdbCraft.Scripts.SpacetimeDb.ReducerEvent dbEvent);
 		public delegate void DeleteEventHandler(Block deletedValue, StdbCraft.Scripts.SpacetimeDb.ReducerEvent dbEvent);
 		public delegate void RowUpdateEventHandler(Block oldValue, Block newValue, StdbCraft.Scripts.SpacetimeDb.ReducerEvent dbEvent);
 		public static event InsertEventHandler OnInsert;
-		public static event UpdateEventHandler OnUpdate;
 		public static event DeleteEventHandler OnBeforeDelete;
 		public static event DeleteEventHandler OnDelete;
 		public static event RowUpdateEventHandler OnRowUpdate;
@@ -160,11 +146,6 @@ namespace StdbCraft.Scripts.SpacetimeDb
 		public static void OnInsertEvent(object newValue, ClientApi.Event dbEvent)
 		{
 			OnInsert?.Invoke((Block)newValue,(ReducerEvent)dbEvent?.FunctionCall.CallInfo);
-		}
-
-		public static void OnUpdateEvent(object oldValue, object newValue, ClientApi.Event dbEvent)
-		{
-			OnUpdate?.Invoke((Block)oldValue,(Block)newValue,(ReducerEvent)dbEvent?.FunctionCall.CallInfo);
 		}
 
 		public static void OnBeforeDeleteEvent(object oldValue, ClientApi.Event dbEvent)

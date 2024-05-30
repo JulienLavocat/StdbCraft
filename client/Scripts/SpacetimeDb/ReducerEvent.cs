@@ -11,6 +11,7 @@ namespace StdbCraft.Scripts.SpacetimeDb
 	public enum ReducerType
 	{
 		None,
+		SendBlockChange,
 	}
 
 	public partial class ReducerEvent : ReducerEventBase
@@ -23,11 +24,29 @@ namespace StdbCraft.Scripts.SpacetimeDb
 			Reducer = reducer;
 		}
 
+		public SendBlockChangeArgsStruct SendBlockChangeArgs
+		{
+			get
+			{
+				if (Reducer != ReducerType.SendBlockChange) throw new SpacetimeDB.ReducerMismatchException(Reducer.ToString(), "SendBlockChange");
+				return (SendBlockChangeArgsStruct)Args;
+			}
+		}
 
 		public object[] GetArgsAsObjectArray()
 		{
 			switch (Reducer)
 			{
+				case ReducerType.SendBlockChange:
+				{
+					var args = SendBlockChangeArgs;
+					return new object[] {
+						args.X,
+						args.Y,
+						args.Z,
+						args.BlockId,
+					};
+				}
 				default: throw new System.Exception($"Unhandled reducer case: {Reducer}. Please run SpacetimeDB code generator");
 			}
 		}

@@ -100,6 +100,6 @@ public partial class Player : CharacterBody3D
 
     private void BreakBlock(Vector3I breakAt)
     {
-        ChunkManager.Instance.SetBlock(breakAt, BlockManager.Blocks[0]);
+        ChunkManager.Instance.SetBlock(breakAt, BlockManager.Blocks[1]);
     }
 }

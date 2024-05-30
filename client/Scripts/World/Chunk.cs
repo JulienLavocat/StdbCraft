@@ -30,10 +30,10 @@ public partial class Chunk : StaticBody3D
 
     private readonly SurfaceTool _surfaceTool = new();
     private bool _refresh;
+    private WorldGen _worldGen;
+
     [Export] public CollisionShape3D CollisionShape { get; set; }
     [Export] public MeshInstance3D MeshInstance { get; set; }
-
-    [Export] public FastNoiseLite Noise { get; set; }
 
     public Vector2I ChunkPosition { get; private set; }
 
@@ -56,20 +56,15 @@ public partial class Chunk : StaticBody3D
         for (var z = 0; z < Dimensions.Z; z++)
         {
             var globalBlockPosition = globalChunkPosition + new Vector2(x, z);
-            var groundHeight =
-                (int)(Dimensions.Y * ((Noise.GetNoise2D(globalBlockPosition.X, globalBlockPosition.Y) + 1f) / 2f));
-
-            var blockId = 1; // air
-            if (y == groundHeight - 1) blockId = 5;
-            else if (y == groundHeight - 2) blockId = 6;
-            else if (y < groundHeight - 4)
-                blockId = 2;
-            else if (y < groundHeight)
-                blockId = 3;
-            else if (y == groundHeight) blockId = 4;
-
+            var blockId = _worldGen.GetBlock(globalBlockPosition, y);
             _blocks[x, y, z] = BlockManager.Blocks[blockId];
         }
+
+        if (!ChangesRegistry.TryGetValue(ChunkPosition, out var changes)) return;
+        foreach (var (key, value) in changes)
+            _blocks[key.X, key.Y, key.Z] = BlockManager.Blocks[(int)value];
+
+        if (ChunkPosition == new Vector2I(1, 0)) GD.Print("Chunk has ", changes.Count, " changes");
     }
 
     private void UpdateMesh(bool generateBlocks)
@@ -169,5 +164,10 @@ public partial class Chunk : StaticBody3D
     {
         _blocks[position.X, position.Y, position.Z] = block;
         UpdateMesh(false);
+    }
+
+    public void SetWorldGenerator(WorldGen worldGen)
+    {
+        _worldGen = worldGen;
     }
 }

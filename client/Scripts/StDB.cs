@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Net.WebSockets;
 using SpacetimeDB;
+using StdbCraft.Scripts.SpacetimeDb;
+using StDBCraft.Scripts.World;
 using Logger = StDBCraft.Scripts.Utils.Logger;
 
 namespace StDBCraft.Scripts;
@@ -21,6 +23,10 @@ public static class StDb
         Client.onConnectError += OnConnectError;
         Client.onIdentityReceived += OnIdentityReceived;
         Client.onSubscriptionApplied += OnSubscriptionApplied;
+
+        BlockChange.OnInsert += (value, _) => ChangesRegistry.Add(value);
+        BlockChange.OnDelete += (value, _) => ChangesRegistry.Remove(value);
+        BlockChange.OnUpdate += (_, value, _) => ChangesRegistry.Add(value);
 
         Client.Connect(AuthToken.Token ?? "", "localhost:3000", "stdbmc");
     }

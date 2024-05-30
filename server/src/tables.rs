@@ -2,12 +2,12 @@ use spacetimedb::spacetimedb;
 
 #[spacetimedb(table)]
 pub struct WorldInfos {
-    pub seed: i32
+    pub seed: i32,
 }
 
 #[spacetimedb(table)]
 pub struct Block {
-    #[primarykey]
+    #[unique]
     #[autoinc]
     pub id: i32,
     pub is_transparent: bool,
@@ -26,4 +26,16 @@ impl Default for Block {
             is_transparent: false,
         }
     }
+}
+
+#[spacetimedb(table)]
+#[spacetimedb(index(btree, name = "pos", x, y, z))]
+pub struct BlockChange {
+    #[primarykey]
+    #[autoinc]
+    pub id: u64,
+    pub x: i32,
+    pub y: i32,
+    pub z: i32,
+    pub block_id: i32,
 }

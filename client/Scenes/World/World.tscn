@@ -19,7 +19,7 @@ sky_material = SubResource("ProceduralSkyMaterial_rvjpw")
 background_mode = 2
 sky = SubResource("Sky_s3tot")
 
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_etxj3"]
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_mysgs"]
 
 [node name="World" type="Node3D"]
 
@@ -29,7 +29,7 @@ environment = SubResource("Environment_hutiv")
 [node name="GameManager" parent="." instance=ExtResource("1_e4bva")]
 LocalPlayerScene = ExtResource("2_sm3en")
 ChunkManagerScene = ExtResource("3_7vg5x")
-Noise = SubResource("FastNoiseLite_etxj3")
+Noise = SubResource("FastNoiseLite_mysgs")
 Textures = Array[Texture2D]([ExtResource("5_jw8yx"), ExtResource("6_k01my"), ExtResource("7_us73u"), ExtResource("8_uy3nr"), ExtResource("9_j4vw5"), ExtResource("10_40vlo")])
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]

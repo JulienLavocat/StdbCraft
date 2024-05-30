@@ -32,13 +32,14 @@ public partial class ChunkManager : Node
     {
         Noise.Seed = seed;
         var halfViewRadius = _viewRadius / 2;
+        var worldGenerator = new WorldGen(Noise);
         for (var i = 0; i < _viewRadius * _viewRadius; i++)
         {
             var chunk = ChunkScene.InstantiateOrNull<Chunk>();
-            chunk.Noise = Noise;
             _chunks.Add(chunk);
-            CallDeferred(Node.MethodName.AddChild, chunk);
+            chunk.SetWorldGenerator(worldGenerator);
             chunk.SetChunkPosition(new Vector2I(i / _viewRadius - halfViewRadius, i % _viewRadius - halfViewRadius));
+            CallDeferred(Node.MethodName.AddChild, chunk);
         }
 
         new Thread(ThreadProcess).Start();
@@ -59,6 +60,7 @@ public partial class ChunkManager : Node
     public void SetBlock(Vector3I worldPosition, Block block)
     {
         var chunkPosition = WorldToChunk(worldPosition);
+        Reducer.SendBlockChange(worldPosition.X, worldPosition.Y, worldPosition.Z, block.Id);
         lock (_positionToChunk)
         {
             if (_positionToChunk.TryGetValue(chunkPosition, out var chunk))
@@ -70,6 +72,13 @@ public partial class ChunkManager : Node
     {
         return new Vector2I(Mathf.FloorToInt(worldPosition.X / (float)Chunk.Dimensions.X),
             Mathf.FloorToInt(worldPosition.Z / (float)Chunk.Dimensions.Z));
+    }
+
+
+    public static Vector2I WorldToChunk(float x, float z)
+    {
+        return new Vector2I(Mathf.FloorToInt(x / Chunk.Dimensions.X),
+            Mathf.FloorToInt(z / Chunk.Dimensions.Z));
     }
 
     public override void _PhysicsProcess(double delta)
