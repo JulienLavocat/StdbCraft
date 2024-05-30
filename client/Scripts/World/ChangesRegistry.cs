@@ -11,10 +11,10 @@ public static class ChangesRegistry
 
     public static void Add(BlockChange bc)
     {
-        if (Changes.TryGetValue(ChunkManager.WorldToChunk(bc.X, bc.Z), out var changesList))
+        if (Changes.TryGetValue(WorldUtils.ChunkFromWorldPosition(bc.X, bc.Z), out var changesList))
             changesList[new Vector3I(bc.X, bc.Y, bc.Z)] = bc.BlockId;
         else
-            Changes.Add(ChunkManager.WorldToChunk(bc.X, bc.Z), new Dictionary<Vector3I, int>
+            Changes.Add(WorldUtils.ChunkFromWorldPosition(bc.X, bc.Z), new Dictionary<Vector3I, int>
             {
                 { new Vector3I(bc.X, bc.Y, bc.Z), bc.BlockId }
             });
@@ -24,9 +24,9 @@ public static class ChangesRegistry
 
     public static void Remove(BlockChange bc)
     {
-        if (!Changes.TryGetValue(ChunkManager.WorldToChunk(bc.X, bc.Z), out var changesList)) return;
+        if (!Changes.TryGetValue(WorldUtils.ChunkFromWorldPosition(bc.X, bc.Z), out var changesList)) return;
         changesList.Remove(new Vector3I(bc.X, bc.Y, bc.Z));
-        if (changesList.Count == 0) Changes.Remove(ChunkManager.WorldToChunk(bc.X, bc.Z));
+        if (changesList.Count == 0) Changes.Remove(WorldUtils.ChunkFromWorldPosition(bc.X, bc.Z));
     }
 
 

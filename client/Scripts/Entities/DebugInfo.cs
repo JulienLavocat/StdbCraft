@@ -16,7 +16,7 @@ public partial class DebugInfo : Label
         Text =
             @$"FPS: {Engine.GetFramesPerSecond()}
 Position: ({playerPos.X:F2},{playerPos.Y:F2},{playerPos.Z:F2})
-Chunk: {ChunkManager.WorldToChunk((Vector3I)Player.Instance.GlobalPosition)}
+Chunk: {WorldUtils.ChunkFromWorldPosition(Player.Instance.GlobalPosition)}
 LookingAt: {lookingAt}
 ";
     }

@@ -62,9 +62,10 @@ public partial class Chunk : StaticBody3D
 
         if (!ChangesRegistry.TryGetValue(ChunkPosition, out var changes)) return;
         foreach (var (key, value) in changes)
-            _blocks[key.X, key.Y, key.Z] = BlockManager.Blocks[(int)value];
-
-        if (ChunkPosition == new Vector2I(1, 0)) GD.Print("Chunk has ", changes.Count, " changes");
+        {
+            var position = WorldUtils.ChunkRelativePosition(key);
+            _blocks[position.X, position.Y, position.Z] = BlockManager.Blocks[value];
+        }
     }
 
     private void UpdateMesh(bool generateBlocks)

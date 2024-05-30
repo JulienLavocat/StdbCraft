@@ -8,13 +8,12 @@ namespace StDBCraft.Scripts.World;
 
 public partial class ChunkManager : Node
 {
+    private const int ViewRadius = 12;
     private readonly List<Chunk> _chunks = new();
     private readonly Godot.Collections.Dictionary<Chunk, Vector2I> _chunkToPosition = new();
 
     private readonly object _playerPositionLock = new();
     private readonly Godot.Collections.Dictionary<Vector2I, Chunk> _positionToChunk = new();
-
-    private readonly int _viewRadius = 5;
 
     private Vector3 _playerPosition;
 
@@ -31,14 +30,14 @@ public partial class ChunkManager : Node
     public void StartChunkGeneration(int seed)
     {
         Noise.Seed = seed;
-        var halfViewRadius = _viewRadius / 2;
+        const int halfViewRadius = ViewRadius / 2;
         var worldGenerator = new WorldGen(Noise);
-        for (var i = 0; i < _viewRadius * _viewRadius; i++)
+        for (var i = 0; i < ViewRadius * ViewRadius; i++)
         {
             var chunk = ChunkScene.InstantiateOrNull<Chunk>();
-            _chunks.Add(chunk);
             chunk.SetWorldGenerator(worldGenerator);
-            chunk.SetChunkPosition(new Vector2I(i / _viewRadius - halfViewRadius, i % _viewRadius - halfViewRadius));
+            chunk.SetChunkPosition(new Vector2I(i / ViewRadius - halfViewRadius, i % ViewRadius - halfViewRadius));
+            _chunks.Add(chunk);
             CallDeferred(Node.MethodName.AddChild, chunk);
         }
 
@@ -59,7 +58,7 @@ public partial class ChunkManager : Node
 
     public void SetBlock(Vector3I worldPosition, Block block)
     {
-        var chunkPosition = WorldToChunk(worldPosition);
+        var chunkPosition = WorldUtils.ChunkFromWorldPosition(worldPosition);
         Reducer.SendBlockChange(worldPosition.X, worldPosition.Y, worldPosition.Z, block.Id);
         lock (_positionToChunk)
         {
@@ -68,18 +67,6 @@ public partial class ChunkManager : Node
         }
     }
 
-    public static Vector2I WorldToChunk(Vector3I worldPosition)
-    {
-        return new Vector2I(Mathf.FloorToInt(worldPosition.X / (float)Chunk.Dimensions.X),
-            Mathf.FloorToInt(worldPosition.Z / (float)Chunk.Dimensions.Z));
-    }
-
-
-    public static Vector2I WorldToChunk(float x, float z)
-    {
-        return new Vector2I(Mathf.FloorToInt(x / Chunk.Dimensions.X),
-            Mathf.FloorToInt(z / Chunk.Dimensions.Z));
-    }
 
     public override void _PhysicsProcess(double delta)
     {
@@ -91,7 +78,7 @@ public partial class ChunkManager : Node
 
     private void ThreadProcess()
     {
-        var halfViewRadius = _viewRadius / 2;
+        var halfViewRadius = ViewRadius / 2;
 
         while (IsInstanceValid(this))
         {
@@ -115,9 +102,9 @@ public partial class ChunkManager : Node
                     chunkZ = chunkPosition.Y;
                 }
 
-                var newChunkX = Mathf.PosMod(chunkX - playerChunkX + halfViewRadius, _viewRadius) + playerChunkX -
+                var newChunkX = Mathf.PosMod(chunkX - playerChunkX + halfViewRadius, ViewRadius) + playerChunkX -
                                 halfViewRadius;
-                var newChunkZ = Mathf.PosMod(chunkZ - playerChunkZ + halfViewRadius, _viewRadius) + playerChunkZ -
+                var newChunkZ = Mathf.PosMod(chunkZ - playerChunkZ + halfViewRadius, ViewRadius) + playerChunkZ -
                                 halfViewRadius;
 
                 if (newChunkX == chunkX && newChunkZ == chunkZ) continue;
