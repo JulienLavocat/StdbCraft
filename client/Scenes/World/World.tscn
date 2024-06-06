@@ -1,8 +1,9 @@
-[gd_scene load_steps=14 format=3 uid="uid://du4jeotpmd58o"]
+[gd_scene load_steps=17 format=3 uid="uid://du4jeotpmd58o"]
 
 [ext_resource type="PackedScene" uid="uid://ddxf5aoas4r33" path="res://Scenes/GameManager.tscn" id="1_e4bva"]
 [ext_resource type="PackedScene" uid="uid://ds7t06g4naxuw" path="res://Scenes/Entities/Player.tscn" id="2_sm3en"]
 [ext_resource type="PackedScene" uid="uid://c5shy618l0o2g" path="res://Scenes/World/ChunkManager.tscn" id="3_7vg5x"]
+[ext_resource type="Script" path="res://Scripts/World/WorldGen.cs" id="4_g6abt"]
 [ext_resource type="Texture2D" uid="uid://cisd1b1hm4yny" path="res://Textures/Blocks/stone.png" id="5_jw8yx"]
 [ext_resource type="Texture2D" uid="uid://vifchmkrb3gj" path="res://Textures/Blocks/dirt.png" id="6_k01my"]
 [ext_resource type="Texture2D" uid="uid://cejdfsf1u3e56" path="res://Textures/Blocks/grass_side.png" id="7_us73u"]
@@ -19,7 +20,18 @@ sky_material = SubResource("ProceduralSkyMaterial_rvjpw")
 background_mode = 2
 sky = SubResource("Sky_s3tot")
 
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_mysgs"]
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_ifc2i"]
+noise_type = 3
+domain_warp_fractal_type = 2
+
+[sub_resource type="Curve" id="Curve_5olp2"]
+_data = [Vector2(0, 0.25), 0.0, 0.384615, 0, 1, Vector2(0.65, 0.5), 0.384615, 0.0, 1, 0, Vector2(0.7, 0.75), 0.0, 0.0, 0, 0, Vector2(1, 0.75), 0.0, nan, 0, 1]
+point_count = 4
+
+[sub_resource type="Resource" id="Resource_7x3ad"]
+script = ExtResource("4_g6abt")
+_continentalness = SubResource("FastNoiseLite_ifc2i")
+_height = SubResource("Curve_5olp2")
 
 [node name="World" type="Node3D"]
 
@@ -29,8 +41,9 @@ environment = SubResource("Environment_hutiv")
 [node name="GameManager" parent="." instance=ExtResource("1_e4bva")]
 LocalPlayerScene = ExtResource("2_sm3en")
 ChunkManagerScene = ExtResource("3_7vg5x")
-Noise = SubResource("FastNoiseLite_mysgs")
+Generator = SubResource("Resource_7x3ad")
 Textures = Array[Texture2D]([ExtResource("5_jw8yx"), ExtResource("6_k01my"), ExtResource("7_us73u"), ExtResource("8_uy3nr"), ExtResource("9_j4vw5"), ExtResource("10_40vlo")])
+ViewDistance = 8
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.654899, 0.755716, 0, -0.755716, 0.654899, 0, 37.3323, -10.2743)

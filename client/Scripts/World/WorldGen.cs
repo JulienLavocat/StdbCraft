@@ -2,29 +2,17 @@
 
 namespace StDBCraft.Scripts.World;
 
-public class WorldGen
+[GlobalClass]
+public partial class WorldGen : Resource
 {
-    private readonly FastNoiseLite _noise;
+    [Export] private FastNoiseLite _continentalness;
+    [Export] private Curve _height;
 
-    public WorldGen(FastNoiseLite noise)
+    public int GetBlock(int x, int y, int z)
     {
-        _noise = noise;
-    }
+        var continentalness = _continentalness.GetNoise2D(x, z);
+        var terrainHeight = Mathf.Round(_height.Sample((continentalness + 1) / 2) * 200);
 
-    public int GetBlock(Vector2 position, int y)
-    {
-        var groundHeight =
-            (int)(Chunk.Dimensions.Y * ((_noise.GetNoise2D(position.X, position.Y) + 1f) / 2f));
-
-        var blockId = 1; // air
-        if (y == groundHeight - 1) blockId = 5;
-        else if (y == groundHeight - 2) blockId = 6;
-        else if (y < groundHeight - 4)
-            blockId = 2;
-        else if (y < groundHeight)
-            blockId = 3;
-        else if (y == groundHeight) blockId = 4;
-
-        return blockId;
+        return y < terrainHeight ? 2 : 1; // Stone ? Air
     }
 }

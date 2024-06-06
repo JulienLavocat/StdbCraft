@@ -13,11 +13,13 @@ public partial class GameManager : Node
     private readonly Logger _logger = new(typeof(GameManager));
 
     private ChunkManager _chunkManager;
+    [Export] public Vector3I Spawn = new(0, 150, 0);
 
     [Export] public PackedScene LocalPlayerScene { get; set; }
     [Export] public PackedScene ChunkManagerScene { get; set; }
-    [Export] public FastNoiseLite Noise { get; set; }
+    [Export] public WorldGen Generator { get; set; }
     [Export] public Texture2D[] Textures { get; set; }
+    [Export] public int ViewDistance { get; set; } = 6;
 
     public override void _Ready()
     {
@@ -39,13 +41,12 @@ public partial class GameManager : Node
 
         var wi = WorldInfos.Iter().First();
         _chunkManager = ChunkManagerScene.Instantiate<ChunkManager>();
-        _chunkManager.Noise = Noise;
         AddChild(_chunkManager);
-        _chunkManager.StartChunkGeneration(wi.Seed);
+        _chunkManager.StartChunkGeneration(Generator, ViewDistance);
 
         _logger.Info("Initialisation completed, spawning local player");
         var player = LocalPlayerScene.Instantiate<Player>();
         AddChild(player);
-        player.GlobalPosition = new Vector3(0, 100, 0);
+        player.GlobalPosition = Spawn;
     }
 }

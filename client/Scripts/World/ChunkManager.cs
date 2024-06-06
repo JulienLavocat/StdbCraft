@@ -8,7 +8,6 @@ namespace StDBCraft.Scripts.World;
 
 public partial class ChunkManager : Node
 {
-    private const int ViewRadius = 12;
     private readonly List<Chunk> _chunks = new();
     private readonly Godot.Collections.Dictionary<Chunk, Vector2I> _chunkToPosition = new();
 
@@ -16,27 +15,28 @@ public partial class ChunkManager : Node
     private readonly Godot.Collections.Dictionary<Vector2I, Chunk> _positionToChunk = new();
 
     private Vector3 _playerPosition;
+    private int _viewDistance;
 
     public static ChunkManager Instance { get; private set; }
 
     [Export] public PackedScene ChunkScene { get; set; }
-    [Export] public FastNoiseLite Noise { get; set; }
 
     public override void _Ready()
     {
         Instance = this;
     }
 
-    public void StartChunkGeneration(int seed)
+    public void StartChunkGeneration(WorldGen worldGen, int viewDistance)
     {
-        Noise.Seed = seed;
-        const int halfViewRadius = ViewRadius / 2;
-        var worldGenerator = new WorldGen(Noise);
-        for (var i = 0; i < ViewRadius * ViewRadius; i++)
+        _viewDistance = viewDistance;
+        var halfViewRadius = viewDistance / 2;
+        var doubleViewRadius = viewDistance * viewDistance;
+
+        for (var i = 0; i < doubleViewRadius; i++)
         {
             var chunk = ChunkScene.InstantiateOrNull<Chunk>();
-            chunk.SetWorldGenerator(worldGenerator);
-            chunk.SetChunkPosition(new Vector2I(i / ViewRadius - halfViewRadius, i % ViewRadius - halfViewRadius));
+            chunk.SetWorldGenerator(worldGen);
+            chunk.SetChunkPosition(new Vector2I(i / viewDistance - halfViewRadius, i % viewDistance - halfViewRadius));
             _chunks.Add(chunk);
             CallDeferred(Node.MethodName.AddChild, chunk);
         }
@@ -78,7 +78,7 @@ public partial class ChunkManager : Node
 
     private void ThreadProcess()
     {
-        var halfViewRadius = ViewRadius / 2;
+        var halfViewRadius = _viewDistance / 2;
 
         while (IsInstanceValid(this))
         {
@@ -102,9 +102,9 @@ public partial class ChunkManager : Node
                     chunkZ = chunkPosition.Y;
                 }
 
-                var newChunkX = Mathf.PosMod(chunkX - playerChunkX + halfViewRadius, ViewRadius) + playerChunkX -
+                var newChunkX = Mathf.PosMod(chunkX - playerChunkX + halfViewRadius, _viewDistance) + playerChunkX -
                                 halfViewRadius;
-                var newChunkZ = Mathf.PosMod(chunkZ - playerChunkZ + halfViewRadius, ViewRadius) + playerChunkZ -
+                var newChunkZ = Mathf.PosMod(chunkZ - playerChunkZ + halfViewRadius, _viewDistance) + playerChunkZ -
                                 halfViewRadius;
 
                 if (newChunkX == chunkX && newChunkZ == chunkZ) continue;

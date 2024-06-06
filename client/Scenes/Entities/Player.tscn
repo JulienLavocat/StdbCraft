@@ -55,6 +55,7 @@ CharacterBody = NodePath("../..")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 shape = SubResource("CapsuleShape3D_pgkoh")
+disabled = true
 
 [node name="Head" type="Node3D" parent="."]
 

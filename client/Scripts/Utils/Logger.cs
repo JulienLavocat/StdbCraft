@@ -63,4 +63,9 @@ public class Logger
             stringBuilder.Append(parameters[index]?.ToString() ?? "null").Append(' ');
         return stringBuilder.ToString();
     }
+
+    public static void Log(params object[] what)
+    {
+        Print(AppendPrintParams(what));
+    }
 }

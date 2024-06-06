@@ -5,7 +5,7 @@ namespace StDBCraft.Scripts.World;
 
 public partial class Chunk : StaticBody3D
 {
-    public static readonly Vector3I Dimensions = new(16, 64, 16);
+    public static readonly Vector3I Dimensions = new(16, 256, 16);
 
     private static readonly Vector3I[] Vertices =
     {
@@ -55,8 +55,7 @@ public partial class Chunk : StaticBody3D
         for (var y = 0; y < Dimensions.Y; y++)
         for (var z = 0; z < Dimensions.Z; z++)
         {
-            var globalBlockPosition = globalChunkPosition + new Vector2(x, z);
-            var blockId = _worldGen.GetBlock(globalBlockPosition, y);
+            var blockId = _worldGen.GetBlock(x + globalChunkPosition.X, y, z + globalChunkPosition.Y);
             _blocks[x, y, z] = BlockManager.Blocks[blockId];
         }
 
@@ -84,6 +83,7 @@ public partial class Chunk : StaticBody3D
         for (var z = 0; z < Dimensions.Z; z++)
             CreateBlockMesh(new Vector3I(x, y, z));
 
+        if (!IsInstanceValid(_surfaceTool)) return;
         _surfaceTool.SetMaterial(BlockManager.ChunkMaterial);
 
         var mesh = _surfaceTool.Commit();
