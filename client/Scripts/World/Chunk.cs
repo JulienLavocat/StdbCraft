@@ -58,16 +58,9 @@ public partial class Chunk : StaticBody3D
             var blockId = _worldGen.GetBlock(x + globalChunkPosition.X, y, z + globalChunkPosition.Y);
             _blocks[x, y, z] = BlockManager.Blocks[blockId];
         }
-
-        if (!ChangesRegistry.TryGetValue(ChunkPosition, out var changes)) return;
-        foreach (var (key, value) in changes)
-        {
-            var position = WorldUtils.ChunkRelativePosition(key);
-            _blocks[position.X, position.Y, position.Z] = BlockManager.Blocks[value];
-        }
     }
 
-    private void UpdateMesh(bool generateBlocks)
+    public void UpdateMesh(bool generateBlocks)
     {
         WorkerThreadPool.AddTask(Callable.From(() => ProcessUpdateMesh(generateBlocks)));
     }
@@ -99,17 +92,17 @@ public partial class Chunk : StaticBody3D
     {
         var block = _blocks[position.X, position.Y, position.Z];
 
-        if (CheckTransparent(position + Vector3I.Up))
+        if (IsBlockTransparent(position + Vector3I.Up))
             CreateFaceMesh(Top, position, block.Top);
-        if (CheckTransparent(position + Vector3I.Down))
+        if (IsBlockTransparent(position + Vector3I.Down))
             CreateFaceMesh(Bottom, position, block.Bottom);
-        if (CheckTransparent(position + Vector3I.Left))
+        if (IsBlockTransparent(position + Vector3I.Left))
             CreateFaceMesh(Left, position, block.Left);
-        if (CheckTransparent(position + Vector3I.Right))
+        if (IsBlockTransparent(position + Vector3I.Right))
             CreateFaceMesh(Right, position, block.Right);
-        if (CheckTransparent(position + Vector3I.Back))
+        if (IsBlockTransparent(position + Vector3I.Back))
             CreateFaceMesh(Back, position, block.Back);
-        if (CheckTransparent(position + Vector3I.Forward))
+        if (IsBlockTransparent(position + Vector3I.Forward))
             CreateFaceMesh(Front, position, block.Front);
     }
 
@@ -149,13 +142,19 @@ public partial class Chunk : StaticBody3D
         _surfaceTool.AddTriangleFan(triangle2, uvTriangle2, normals: normals);
     }
 
-    private bool CheckTransparent(Vector3I position)
+    private bool IsBlockTransparent(Vector3I position)
+    {
+        if (IsChunkEdgeOrOutside(position))
+            return BlockManager.Blocks[_worldGen.GetBlock(WorldUtils.WorldFromChunkPosition(position, ChunkPosition))]
+                .IsTransparent;
+        return _blocks[position.X, position.Y, position.Z].IsTransparent;
+    }
+
+    private static bool IsChunkEdgeOrOutside(Vector3I position)
     {
         if (position.X < 0 || position.X >= Dimensions.X) return true;
         if (position.Y < 0 || position.Y >= Dimensions.Y) return true;
-        if (position.Z < 0 || position.Z >= Dimensions.Z) return true;
-
-        return _blocks[position.X, position.Y, position.Z].IsTransparent;
+        return position.Z < 0 || position.Z >= Dimensions.Z;
     }
 
     /**
@@ -170,6 +169,6 @@ public partial class Chunk : StaticBody3D
     public override void _Input(InputEvent @event)
     {
         if (@event is InputEventKey && Input.IsKeyPressed(Key.P))
-            GetViewport().DebugDraw = (Viewport.DebugDrawEnum)(((int)GetViewport().DebugDraw + 1) % 5);
+            GetViewport().DebugDraw = (Viewport.DebugDrawEnum)(((int)GetViewport().DebugDraw + 1) % 4);
     }
 }

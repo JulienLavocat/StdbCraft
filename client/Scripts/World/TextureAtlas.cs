@@ -55,7 +55,8 @@ public static class TextureAtlas
         {
             AlbedoTexture = textureAtlas,
             TextureFilter = BaseMaterial3D.TextureFilterEnum.Nearest,
-            Transparency = BaseMaterial3D.TransparencyEnum.AlphaScissor
+            Transparency = BaseMaterial3D.TransparencyEnum.AlphaScissor,
+            CullMode = BaseMaterial3D.CullModeEnum.Back
         };
 
         TextureAtlasSize = new Vector2(GridWidth, _gridHeight);

@@ -43,7 +43,7 @@ LocalPlayerScene = ExtResource("2_sm3en")
 ChunkManagerScene = ExtResource("4_4e4id")
 Generator = SubResource("Resource_7x3ad")
 Textures = Array[Texture2D]([ExtResource("5_jw8yx"), ExtResource("6_k01my"), ExtResource("7_us73u"), ExtResource("8_uy3nr"), ExtResource("9_j4vw5"), ExtResource("10_40vlo")])
-ViewDistance = 4
+ViewDistance = 12
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.654899, 0.755716, 0, -0.755716, 0.654899, 0, 37.3323, -10.2743)
