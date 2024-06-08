@@ -44,6 +44,8 @@ public partial class GameManager : Node
         _chunkManager = ChunkManagerScene.InstantiateOrNull<ChunkManager>();
         _chunkManager.Init(Generator, ViewDistance);
         AddChild(_chunkManager);
+        _chunkManager.UpdateChunks();
+        _chunkManager.BeginChunkUpdates();
 
         //TODO: Wait for initial chunk load
 
