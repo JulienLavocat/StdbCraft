@@ -84,7 +84,7 @@ public partial class Chunk : StaticBody3D
             CreateBlockMesh(new Vector3I(x, y, z));
 
         if (!IsInstanceValid(_surfaceTool)) return;
-        _surfaceTool.SetMaterial(BlockManager.ChunkMaterial);
+        _surfaceTool.SetMaterial(TextureAtlas.ChunkMaterial);
 
         _surfaceTool.Index();
         var mesh = _surfaceTool.Commit();
@@ -117,8 +117,8 @@ public partial class Chunk : StaticBody3D
     {
         if (textureIndex == -1) return;
 
-        var texturePosition = BlockManager.GetTextureAtlasPosition(textureIndex);
-        var textureAtlasSize = BlockManager.TextureAtlasSize;
+        var texturePosition = TextureAtlas.GetTextureAtlasPosition(textureIndex);
+        var textureAtlasSize = TextureAtlas.TextureAtlasSize;
 
         var uvOffset = texturePosition / textureAtlasSize;
         var uvWidth = 1f / textureAtlasSize.X;

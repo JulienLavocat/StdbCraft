@@ -16,7 +16,6 @@ pub fn init() {
 
 
     // textures: 0, stone; 1: dirt; 2: grass_side; 3: grass_top, 4: sand, 5: glass
-    Block::insert(BlockBuilder::new().transparent().build()).unwrap(); // air
     Block::insert(BlockBuilder::new().all(0).build()).unwrap(); // stone
     Block::insert(BlockBuilder::new().all(1).build()).unwrap(); // dirt
     Block::insert(BlockBuilder::new().sides(2).top(3).bottom(1).build()).unwrap(); // grass

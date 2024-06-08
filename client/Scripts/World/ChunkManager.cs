@@ -66,7 +66,8 @@ public partial class ChunkManager : Node
                 var chunkPos = new Vector2I(x, z);
                 if (_chunks.ContainsKey(chunkPos)) continue;
 
-                CallDeferred(MethodName.CreateChunk, chunkPos);
+                if (IsInstanceValid(this))
+                    CallDeferred(MethodName.CreateChunk, chunkPos);
 
                 Thread.Sleep(40);
             }

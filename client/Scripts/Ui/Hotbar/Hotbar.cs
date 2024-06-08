@@ -19,7 +19,7 @@ public partial class Hotbar : HBoxContainer
             var textureId = block.Top != -1 ? block.Top : block.Left;
             if (textureId == -1) continue;
 
-            SetItemAt(slotIndex, BlockManager.GetTexture(textureId), block.Id);
+            SetItemAt(slotIndex, TextureAtlas.GetTexture(textureId), block.Id);
             slotIndex++;
         }
 

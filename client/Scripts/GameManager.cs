@@ -35,9 +35,9 @@ public partial class GameManager : Node
     private void InitialiseWorld()
     {
         _logger.Info("Initialising world");
-        BlockManager.SetTextures(Textures);
-        BlockManager.GenerateTextureAtlas();
-
+        BlockManager.LoadBlocks();
+        TextureAtlas.SetTextures(Textures);
+        TextureAtlas.GenerateTextureAtlas(BlockManager.Blocks);
 
         var wi = WorldInfos.Iter().First();
         Generator.SetSeed(wi.Seed);
