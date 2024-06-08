@@ -100,17 +100,17 @@ public partial class Chunk : StaticBody3D
         var block = _blocks[position.X, position.Y, position.Z];
 
         if (CheckTransparent(position + Vector3I.Up))
-            CreateFaceMesh(Top, position, block.Top != -1 ? block.Top : block.Side);
+            CreateFaceMesh(Top, position, block.Top);
         if (CheckTransparent(position + Vector3I.Down))
-            CreateFaceMesh(Bottom, position, block.Bottom != -1 ? block.Bottom : block.Side);
+            CreateFaceMesh(Bottom, position, block.Bottom);
         if (CheckTransparent(position + Vector3I.Left))
-            CreateFaceMesh(Left, position, block.Side);
+            CreateFaceMesh(Left, position, block.Left);
         if (CheckTransparent(position + Vector3I.Right))
-            CreateFaceMesh(Right, position, block.Side);
+            CreateFaceMesh(Right, position, block.Right);
         if (CheckTransparent(position + Vector3I.Back))
-            CreateFaceMesh(Back, position, block.Side);
+            CreateFaceMesh(Back, position, block.Back);
         if (CheckTransparent(position + Vector3I.Forward))
-            CreateFaceMesh(Front, position, block.Side);
+            CreateFaceMesh(Front, position, block.Front);
     }
 
     private void CreateFaceMesh(int[] face, Vector3I position, int textureIndex)

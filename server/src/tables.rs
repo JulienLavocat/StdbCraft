@@ -13,7 +13,10 @@ pub struct Block {
     pub is_transparent: bool,
     pub top: i32,
     pub bottom: i32,
-    pub side: i32,
+    pub left: i32,
+    pub right: i32,
+    pub front: i32,
+    pub back: i32,
 }
 
 impl Default for Block {
@@ -22,7 +25,10 @@ impl Default for Block {
             id: 0,
             top: -1,
             bottom: -1,
-            side: -1,
+            left: -1,
+            right: -1,
+            front: -1,
+            back: -1,
             is_transparent: false,
         }
     }

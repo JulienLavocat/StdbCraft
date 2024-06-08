@@ -28,13 +28,18 @@ public static class BlockManager
         // This block shouldn't be used, it's just an offset for SpacetimeDB since the autoinc starts at 1 
         Blocks.Insert(0, new Block
         {
-            Side = -1,
+            Back = -1,
+            Front = -1,
+            Left = -1,
+            Right = -1,
             Bottom = -1,
-            IsTransparent = true,
             Top = -1,
+            IsTransparent = true,
             Id = 0
         });
-        var blockTextures = Block.Iter().SelectMany(b => new[] { b.Top, b.Bottom, b.Side }).Where(index => index != -1)
+
+        var blockTextures = Block.Iter().SelectMany(b => new[] { b.Top, b.Bottom, b.Left, b.Right, b.Front, b.Back })
+            .Where(index => index != -1)
             .Distinct().Select(textureIndex => _textures[textureIndex]).ToArray();
 
         for (var i = 0; i < blockTextures.Length; i++)

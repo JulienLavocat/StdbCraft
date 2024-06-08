@@ -60,6 +60,6 @@ public static class StDb
 
     private static void OnConnectError(WebSocketError? error, string message)
     {
-        Logger.Info($"Connection failed for for {error}, error {message}");
+        Logger.Info($"Connection failed for {error}, error {message}");
     }
 }

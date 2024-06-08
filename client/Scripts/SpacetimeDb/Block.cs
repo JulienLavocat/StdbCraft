@@ -18,8 +18,14 @@ namespace StdbCraft.Scripts.SpacetimeDb
 		public int Top;
 		[Newtonsoft.Json.JsonProperty("bottom")]
 		public int Bottom;
-		[Newtonsoft.Json.JsonProperty("side")]
-		public int Side;
+		[Newtonsoft.Json.JsonProperty("left")]
+		public int Left;
+		[Newtonsoft.Json.JsonProperty("right")]
+		public int Right;
+		[Newtonsoft.Json.JsonProperty("front")]
+		public int Front;
+		[Newtonsoft.Json.JsonProperty("back")]
+		public int Back;
 
 		private static Dictionary<int, Block> Id_Index = new Dictionary<int, Block>(16);
 
@@ -43,7 +49,10 @@ namespace StdbCraft.Scripts.SpacetimeDb
 				new SpacetimeDB.SATS.ProductTypeElement("is_transparent", SpacetimeDB.SATS.AlgebraicType.CreatePrimitiveType(SpacetimeDB.SATS.BuiltinType.Type.Bool)),
 				new SpacetimeDB.SATS.ProductTypeElement("top", SpacetimeDB.SATS.AlgebraicType.CreatePrimitiveType(SpacetimeDB.SATS.BuiltinType.Type.I32)),
 				new SpacetimeDB.SATS.ProductTypeElement("bottom", SpacetimeDB.SATS.AlgebraicType.CreatePrimitiveType(SpacetimeDB.SATS.BuiltinType.Type.I32)),
-				new SpacetimeDB.SATS.ProductTypeElement("side", SpacetimeDB.SATS.AlgebraicType.CreatePrimitiveType(SpacetimeDB.SATS.BuiltinType.Type.I32)),
+				new SpacetimeDB.SATS.ProductTypeElement("left", SpacetimeDB.SATS.AlgebraicType.CreatePrimitiveType(SpacetimeDB.SATS.BuiltinType.Type.I32)),
+				new SpacetimeDB.SATS.ProductTypeElement("right", SpacetimeDB.SATS.AlgebraicType.CreatePrimitiveType(SpacetimeDB.SATS.BuiltinType.Type.I32)),
+				new SpacetimeDB.SATS.ProductTypeElement("front", SpacetimeDB.SATS.AlgebraicType.CreatePrimitiveType(SpacetimeDB.SATS.BuiltinType.Type.I32)),
+				new SpacetimeDB.SATS.ProductTypeElement("back", SpacetimeDB.SATS.AlgebraicType.CreatePrimitiveType(SpacetimeDB.SATS.BuiltinType.Type.I32)),
 			});
 		}
 
@@ -57,7 +66,10 @@ namespace StdbCraft.Scripts.SpacetimeDb
 				IsTransparent = productValue.elements[1].AsBool(),
 				Top = productValue.elements[2].AsI32(),
 				Bottom = productValue.elements[3].AsI32(),
-				Side = productValue.elements[4].AsI32(),
+				Left = productValue.elements[4].AsI32(),
+				Right = productValue.elements[5].AsI32(),
+				Front = productValue.elements[6].AsI32(),
+				Back = productValue.elements[7].AsI32(),
 			};
 		}
 
@@ -117,12 +129,51 @@ namespace StdbCraft.Scripts.SpacetimeDb
 			}
 		}
 
-		public static System.Collections.Generic.IEnumerable<Block> FilterBySide(int value)
+		public static System.Collections.Generic.IEnumerable<Block> FilterByLeft(int value)
 		{
 			foreach(var entry in SpacetimeDBClient.clientDB.GetEntries("Block"))
 			{
 				var productValue = entry.Item1.AsProductValue();
 				var compareValue = (int)productValue.elements[4].AsI32();
+				if (compareValue == value)
+				{
+					yield return (Block)entry.Item2;
+				}
+			}
+		}
+
+		public static System.Collections.Generic.IEnumerable<Block> FilterByRight(int value)
+		{
+			foreach(var entry in SpacetimeDBClient.clientDB.GetEntries("Block"))
+			{
+				var productValue = entry.Item1.AsProductValue();
+				var compareValue = (int)productValue.elements[5].AsI32();
+				if (compareValue == value)
+				{
+					yield return (Block)entry.Item2;
+				}
+			}
+		}
+
+		public static System.Collections.Generic.IEnumerable<Block> FilterByFront(int value)
+		{
+			foreach(var entry in SpacetimeDBClient.clientDB.GetEntries("Block"))
+			{
+				var productValue = entry.Item1.AsProductValue();
+				var compareValue = (int)productValue.elements[6].AsI32();
+				if (compareValue == value)
+				{
+					yield return (Block)entry.Item2;
+				}
+			}
+		}
+
+		public static System.Collections.Generic.IEnumerable<Block> FilterByBack(int value)
+		{
+			foreach(var entry in SpacetimeDBClient.clientDB.GetEntries("Block"))
+			{
+				var productValue = entry.Item1.AsProductValue();
+				var compareValue = (int)productValue.elements[7].AsI32();
 				if (compareValue == value)
 				{
 					yield return (Block)entry.Item2;

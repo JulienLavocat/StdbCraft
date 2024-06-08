@@ -2,8 +2,10 @@ use log;
 use spacetimedb::{query, ReducerContext, spacetimedb};
 
 use crate::tables::{Block, BlockChange, WorldInfos};
+use crate::utils::BlockBuilder;
 
 mod tables;
+mod utils;
 
 #[spacetimedb(init)]
 pub fn init() {
@@ -12,13 +14,14 @@ pub fn init() {
         seed: 123456,
     });
 
+
     // textures: 0, stone; 1: dirt; 2: grass_side; 3: grass_top, 4: sand, 5: glass
-    Block::insert(Block { is_transparent: true, ..Default::default() }).unwrap(); // air
-    Block::insert(Block { side: 0, ..Default::default() }).unwrap(); // stone
-    Block::insert(Block { side: 1, ..Default::default() }).unwrap(); // dirt
-    Block::insert(Block { top: 3, bottom: 1, side: 2, ..Default::default() }).unwrap(); // grass
-    Block::insert(Block { side: 4, ..Default::default() }).unwrap(); // sand
-    Block::insert(Block { side: 5, is_transparent: true, ..Default::default() }).unwrap(); // glass
+    Block::insert(BlockBuilder::new().transparent().build()).unwrap(); // air
+    Block::insert(BlockBuilder::new().all(0).build()).unwrap(); // stone
+    Block::insert(BlockBuilder::new().all(1).build()).unwrap(); // dirt
+    Block::insert(BlockBuilder::new().sides(2).top(3).bottom(1).build()).unwrap(); // grass
+    Block::insert(BlockBuilder::new().all(4).build()).unwrap(); // sand
+    Block::insert(BlockBuilder::new().all(5).transparent().build()).unwrap(); // glass
 }
 
 #[spacetimedb(connect)]

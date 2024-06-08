@@ -16,7 +16,7 @@ public partial class Hotbar : HBoxContainer
         var slotIndex = 0;
         foreach (var block in BlockManager.Blocks)
         {
-            var textureId = block.Top != -1 ? block.Top : block.Side;
+            var textureId = block.Top != -1 ? block.Top : block.Left;
             if (textureId == -1) continue;
 
             SetItemAt(slotIndex, BlockManager.GetTexture(textureId), block.Id);
