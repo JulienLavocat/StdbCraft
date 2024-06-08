@@ -19,7 +19,7 @@ public partial class GameManager : Node
     [Export] public PackedScene ChunkManagerScene { get; set; }
     [Export] public WorldGen Generator { get; set; }
     [Export] public Texture2D[] Textures { get; set; }
-    [Export] public int ViewDistance { get; set; } = 6;
+    [Export] public int ViewDistance { get; set; } = 1;
 
     public override void _Ready()
     {
@@ -40,9 +40,12 @@ public partial class GameManager : Node
 
 
         var wi = WorldInfos.Iter().First();
-        _chunkManager = ChunkManagerScene.Instantiate<ChunkManager>();
+        Generator.SetSeed(wi.Seed);
+        _chunkManager = ChunkManagerScene.InstantiateOrNull<ChunkManager>();
+        _chunkManager.Init(Generator, ViewDistance);
         AddChild(_chunkManager);
-        _chunkManager.StartChunkGeneration(Generator, ViewDistance);
+
+        //TODO: Wait for initial chunk load
 
         _logger.Info("Initialisation completed, spawning local player");
         var player = LocalPlayerScene.Instantiate<Player>();

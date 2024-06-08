@@ -35,11 +35,11 @@ public partial class Chunk : StaticBody3D
     [Export] public CollisionShape3D CollisionShape { get; set; }
     [Export] public MeshInstance3D MeshInstance { get; set; }
 
-    public Vector2I ChunkPosition { get; private set; }
+    private Vector2I ChunkPosition { get; set; }
 
-    public void SetChunkPosition(Vector2I position)
+    public void Init(Vector2I position, WorldGen generator)
     {
-        ChunkManager.Instance.UpdateChunkPosition(this, position, ChunkPosition);
+        _worldGen = generator;
         ChunkPosition = position;
         MeshInstance.Mesh = null;
         CallDeferred(Node3D.MethodName.SetGlobalPosition,
@@ -86,6 +86,7 @@ public partial class Chunk : StaticBody3D
         if (!IsInstanceValid(_surfaceTool)) return;
         _surfaceTool.SetMaterial(BlockManager.ChunkMaterial);
 
+        _surfaceTool.Index();
         var mesh = _surfaceTool.Commit();
         var collisionShape = mesh.CreateTrimeshShape();
 
@@ -123,13 +124,12 @@ public partial class Chunk : StaticBody3D
         var uvWidth = 1f / textureAtlasSize.X;
         var uvHeight = 1f / textureAtlasSize.Y;
 
-        var uvA = uvOffset + new Vector2(0, 0);
         var uvB = uvOffset + new Vector2(0, uvHeight);
         var uvC = uvOffset + new Vector2(uvWidth, uvHeight);
         var uvD = uvOffset + new Vector2(uvWidth, 0);
 
-        var uvTriangle1 = new[] { uvA, uvB, uvC };
-        var uvTriangle2 = new[] { uvA, uvC, uvD };
+        var uvTriangle1 = new[] { uvOffset, uvB, uvC };
+        var uvTriangle2 = new[] { uvOffset, uvC, uvD };
 
         var a = Vertices[face[0]] + position;
         var b = Vertices[face[1]] + position;
@@ -167,8 +167,9 @@ public partial class Chunk : StaticBody3D
         UpdateMesh(false);
     }
 
-    public void SetWorldGenerator(WorldGen worldGen)
+    public override void _Input(InputEvent @event)
     {
-        _worldGen = worldGen;
+        if (@event is InputEventKey && Input.IsKeyPressed(Key.P))
+            GetViewport().DebugDraw = (Viewport.DebugDrawEnum)(((int)GetViewport().DebugDraw + 1) % 5);
     }
 }

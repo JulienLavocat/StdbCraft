@@ -2,7 +2,7 @@
 
 [ext_resource type="PackedScene" uid="uid://ddxf5aoas4r33" path="res://Scenes/GameManager.tscn" id="1_e4bva"]
 [ext_resource type="PackedScene" uid="uid://ds7t06g4naxuw" path="res://Scenes/Entities/Player.tscn" id="2_sm3en"]
-[ext_resource type="PackedScene" uid="uid://c5shy618l0o2g" path="res://Scenes/World/ChunkManager.tscn" id="3_7vg5x"]
+[ext_resource type="PackedScene" uid="uid://by3yxtpvbqaa1" path="res://Scenes/World/ChunkManager.tscn" id="4_4e4id"]
 [ext_resource type="Script" path="res://Scripts/World/WorldGen.cs" id="4_g6abt"]
 [ext_resource type="Texture2D" uid="uid://cisd1b1hm4yny" path="res://Textures/Blocks/stone.png" id="5_jw8yx"]
 [ext_resource type="Texture2D" uid="uid://vifchmkrb3gj" path="res://Textures/Blocks/dirt.png" id="6_k01my"]
@@ -40,10 +40,10 @@ environment = SubResource("Environment_hutiv")
 
 [node name="GameManager" parent="." instance=ExtResource("1_e4bva")]
 LocalPlayerScene = ExtResource("2_sm3en")
-ChunkManagerScene = ExtResource("3_7vg5x")
+ChunkManagerScene = ExtResource("4_4e4id")
 Generator = SubResource("Resource_7x3ad")
 Textures = Array[Texture2D]([ExtResource("5_jw8yx"), ExtResource("6_k01my"), ExtResource("7_us73u"), ExtResource("8_uy3nr"), ExtResource("9_j4vw5"), ExtResource("10_40vlo")])
-ViewDistance = 8
+ViewDistance = 4
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.654899, 0.755716, 0, -0.755716, 0.654899, 0, 37.3323, -10.2743)

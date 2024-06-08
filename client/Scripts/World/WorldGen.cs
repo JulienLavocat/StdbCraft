@@ -8,6 +8,11 @@ public partial class WorldGen : Resource
     [Export] private FastNoiseLite _continentalness;
     [Export] private Curve _height;
 
+    public void SetSeed(int seed)
+    {
+        _continentalness.Seed = seed;
+    }
+
     public int GetBlock(int x, int y, int z)
     {
         var continentalness = _continentalness.GetNoise2D(x, z);
